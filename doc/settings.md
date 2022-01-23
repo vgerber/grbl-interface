@@ -138,7 +138,7 @@
 Bit-Index always starting at LSB
 
 ### Axis Mask
-| Bit Index | Axis |
+| Bit | Axis |
 | --------- | ---- |
 | 0 | X |
 | 1 | Y |
@@ -147,22 +147,22 @@ Bit-Index always starting at LSB
 | 4 | B |
 
 ### Coolant Mask
-| Bit Index | Name |
+| Bit | Name |
 | --------- | ---- |
 | 0 | Flood |
 | 1 | Mist |
 
 
 ### Spindle Mask
-| Bit| Name | Description |
-| ---| ---- | ----------- |
+| Bit | Name | Description |
+| --- | ---- | ----------- |
 | 0 | Spindle ON | |
 | 1 | Spindle CCW | |
 | 2 | Spindle PWM | |
 
 ### Control Mask
-| Bit| Name | Description |
-| ---| ---- | ----------- |
+| Bit | Name | Description |
+| --- | ---- | ----------- |
 | 0 | Reset | |
 | 1 | Feed Hold | |
 | 2 | Cycle Start | |
