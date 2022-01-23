@@ -1,5 +1,5 @@
 [package]
-name = "grbl-interface"
+name = "grbli"
 version = "0.1.0"
 edition = "2021"
 
