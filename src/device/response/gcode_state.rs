@@ -40,7 +40,7 @@ impl GCodeStateResponse {
         Err(error_str)        
     }
     
-    pub fn get_values(&self) -> &Vec<String> {
+    pub fn values(&self) -> &Vec<String> {
         &self.values
     }
 }

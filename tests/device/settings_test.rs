@@ -1,4 +1,4 @@
-use grbli::grbl::device::settings::*;
+use grbli::device::settings::*;
 
 #[test]
 fn setting_stored_with_correct_values() {

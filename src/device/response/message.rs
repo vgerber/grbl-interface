@@ -36,7 +36,7 @@ impl MessageResponse {
         Err(error_str)        
     }
     
-    pub fn get_message(&self) -> &String {
+    pub fn message(&self) -> &String {
         &self.message
     }
 }

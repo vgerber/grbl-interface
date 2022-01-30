@@ -1,4 +1,4 @@
-use grbli::grbl::device::response::gcode_state::*;
+use grbli::device::response::gcode_state::*;
 
 
 #[test]
@@ -6,7 +6,7 @@ fn from_parses_message_correctly() {
     let message_str = "[GC:AB CD F ' $H 'YO]";
     let expected_message_str = vec!["AB", "CD", "F", "'", "$H", "'YO"];
     let message = GCodeStateResponse::from(message_str).unwrap();
-    assert_eq!(expected_message_str, *message.get_values())
+    assert_eq!(expected_message_str, *message.values())
 }
 
 
@@ -15,7 +15,7 @@ fn from_applys_trimming() {
     let message_str = "  [GC:AB CD F ' $H 'YO]                  ";
     let expected_message_str = vec!["AB", "CD", "F", "'", "$H", "'YO"];
     let message = GCodeStateResponse::from(message_str).unwrap();
-    assert_eq!(expected_message_str, *message.get_values())
+    assert_eq!(expected_message_str, *message.values())
 }
 
 #[test]
@@ -23,7 +23,7 @@ fn from_removes_unecessary_value_whitespaces() {
     let message_str = "[GC: AB CD F ' $H 'YO ]";
     let expected_message_str = vec!["AB", "CD", "F", "'", "$H", "'YO"];
     let message = GCodeStateResponse::from(message_str).unwrap();
-    assert_eq!(expected_message_str, *message.get_values())
+    assert_eq!(expected_message_str, *message.values())
 }
 
 #[test]
@@ -31,7 +31,7 @@ fn from_can_read_empty_messages() {
     let message_str = "[GC:]";
     let expected_message_str: Vec<String> = Vec::new();
     let message = GCodeStateResponse::from(message_str).unwrap();
-    assert_eq!(expected_message_str, *message.get_values())
+    assert_eq!(expected_message_str, *message.values())
 }
 
 #[test]

@@ -1,1 +1,1 @@
-pub mod grbl;
+pub mod device;
