@@ -1,37 +1,10 @@
-use std::result::Result;
-
-use crate::device::axis::Axis;
-
 pub mod machine_status;
+pub mod signal;
+pub mod accessory;
 
-
-pub enum MachineSignal {
-    ProbeTriggered,
-    ProbeDisconnected,
-    XLimitSwitchAsserted,
-    YLimitSwitchAsserted,
-    ZLimitSwitchAsserted,
-    ALimitSwitchAsserted,
-    BLimitSwitchAsserted,
-    CLimitSwitchAsserted,
-    DoorSwitchAsserted,
-    ResetSwitchAsserted,
-    FeedHoldSwitchAsserted,
-    CycleStartSwitchAsserted,
-    EStopSwitchAsserted,
-    BlockDeleteSwitchAsserted,
-    OptionalProgramStopSwitchAsserted,
-    MotorWarning,
-    MotorFault,
-}
-
-pub enum AccessoryState {
-    SpindleClockwise,
-    SpindleCounterClockwise,
-    FloodCoolantEnabled,
-    MistCoolantEnabled,
-    ToolChangePending,
-}
+use std::result::Result;
+use crate::device::axis::Axis;
+use self::{machine_status::MachineStatus, signal::MachineSignal, accessory::AccessoryState};
 
 pub enum PendantControl {
     Released,
@@ -41,40 +14,6 @@ pub enum PendantControl {
 pub enum ArcMode {
     Radius,
     Diameter,
-}
-
-pub fn get_accessory_state(state: &str) -> Result<AccessoryState, String> {
-    match state {
-        "S" => Ok(AccessoryState::SpindleClockwise),
-        "C" => Ok(AccessoryState::SpindleCounterClockwise),
-        "F" => Ok(AccessoryState::FloodCoolantEnabled),
-        "M" => Ok(AccessoryState::MistCoolantEnabled),
-        "T" => Ok(AccessoryState::ToolChangePending),
-        _ => Err(format!("Unknown accessory state \"{}\"", state))
-    }
-}
-
-pub fn get_signal(signal: &str) -> Result<MachineSignal, String> {
-    match signal {
-        "P" => Ok(MachineSignal::ProbeTriggered),
-        "O" => Ok(MachineSignal::ProbeDisconnected),
-        "X" => Ok(MachineSignal::XLimitSwitchAsserted),
-        "Y" => Ok(MachineSignal::YLimitSwitchAsserted),
-        "Z" => Ok(MachineSignal::ZLimitSwitchAsserted),
-        "A" => Ok(MachineSignal::ALimitSwitchAsserted),
-        "B" => Ok(MachineSignal::BLimitSwitchAsserted),
-        "C" => Ok(MachineSignal::CLimitSwitchAsserted),
-        "D" => Ok(MachineSignal::DoorSwitchAsserted),
-        "R" => Ok(MachineSignal::ResetSwitchAsserted),
-        "H" => Ok(MachineSignal::FeedHoldSwitchAsserted),
-        "S" => Ok(MachineSignal::CycleStartSwitchAsserted),
-        "E" => Ok(MachineSignal::EStopSwitchAsserted),
-        "L" => Ok(MachineSignal::BlockDeleteSwitchAsserted),
-        "T" => Ok(MachineSignal::OptionalProgramStopSwitchAsserted),
-        "W" => Ok(MachineSignal::MotorWarning),
-        "M" => Ok(MachineSignal::MotorFault),
-        _ => Err(format!("Unknown signal \"{}\"", signal))
-    }
 }
 
 pub fn get_pendant_control(state: i8) -> Result<PendantControl, String> {
@@ -92,8 +31,6 @@ pub fn get_arc_mode(mode: &str) -> Result<ArcMode, String> {
         _ => Err(format!("Unknown arc mode \"{}\"", mode))
     }
 }
-
-
 
 pub struct MachinePosition(f32, f32, f32);
 
@@ -161,53 +98,13 @@ impl ReportResponse {
     /// Basic usage:
     /// ```
     /// // stores all status messages from this message
-    /// let response = StartupResponse::from("<Status:0|State2|...|StateN>");
+    /// let response = ReportResponse::from("<Status:0|State2|...|StateN>");
     /// ```
-    pub fn from(message: &str) -> Result<StartupResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
-
-        // check if message has the correct syntax
-        // and return the unwrapped value
-        // ">line:status:code"
-        if trimmed_message.starts_with("<") && trimmed_message.ends_with(">") {
-            let message_payload = &trimmed_message[1..];
-            let segments: Vec<&str> = message_payload.split(":").collect();
-            
-            // expect <line>:<status>[:code]
-            if segments.len() < 2 {
-                return Err(format!("Invalid count of startup segments \"{}\"", message_payload));    
-            }
-            
-            // reead <:code> value
-            let mut result_code = -1;
-            if segments.len() >= 3 {
-                result_code = match segments[2].parse() {
-                    Ok(value) => value,
-                    Err(_) => -1
-                };
-            }
-            
-            // read status message
-            let executed_line = String::from(segments[0]);
-            let result = match segments[1] {
-                "ok" => StartupResult::Ok,
-                "error" => StartupResult::Error(result_code),
-                _ => return Err(format!("Invalid result \"{}\"", segments[1])),
-            };
-
-            return Ok(StartupResponse {
-                executed_line,
-                result,
-            })
-        }
+    pub fn from(message: &str) -> Result<ReportResponse, String> {
         Err(format!("Could not read startup \"{}\"", message))        
     }
-    
-    pub fn executed_line(&self) -> &String {
-        &self.executed_line
-    }
 
-    pub fn result(&self) -> &StartupResult {
-        &self.result
+    pub fn is_report_response(message: &str) -> bool {
+        message.starts_with("<") && message.ends_with(">")
     }
 }
