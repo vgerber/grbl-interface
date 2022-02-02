@@ -18,22 +18,23 @@ impl MessageResponse {
     /// let response = MessageResponse::from("[MSG:Hello]");
     /// ```
     pub fn from(message: &str) -> Result<MessageResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
 
         // check if message has the correct syntax
         // and return the unwrapped value
         // "[MSG:<value>]"
-        if trimmed_message.starts_with("[MSG:") && trimmed_message.ends_with("]") {
-            let message_end = trimmed_message.len()-1;
-            let message_payload = &trimmed_message[5..message_end];
+        if MessageResponse::is_response(message) {
+            let message_end = message.len()-1;
+            let message_payload = &message[5..message_end];
             return Ok(MessageResponse {
                 message: String::from(message_payload)
             })    
         }
+        Err(format!("Could not read message \"{}\"", message))        
+    }
 
-        let mut error_str = String::from("Could not read message: ");
-        error_str.push_str(&trimmed_message);
-        Err(error_str)        
+    /// Indicates if message has required message outline
+    pub fn is_response(message: &str) -> bool {
+        message.starts_with("[MSG:") && message.ends_with("]")
     }
     
     pub fn message(&self) -> &String {

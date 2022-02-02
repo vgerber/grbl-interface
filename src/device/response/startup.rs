@@ -28,7 +28,7 @@ impl StartupResponse {
         // check if message has the correct syntax
         // and return the unwrapped value
         // ">line:status:code"
-        if trimmed_message.starts_with(">") {
+        if StartupResponse::is_response(&trimmed_message) {
             let message_payload = &trimmed_message[1..];
             let segments: Vec<&str> = message_payload.split(":").collect();
             
@@ -60,6 +60,11 @@ impl StartupResponse {
             })
         }
         Err(format!("Could not read startup \"{}\"", message))        
+    }
+
+    /// Indicates if message has required startup prefix
+    pub fn is_response(message: &str) -> bool {
+        message.starts_with(">")
     }
     
     pub fn executed_line(&self) -> &String {

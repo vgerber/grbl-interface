@@ -10,11 +10,10 @@ fn from_parses_message_correctly() {
 }
 
 #[test]
-fn from_applys_trimming() {
+fn from_does_not_apply_trimming() {
     let message_str = "  [echo:ABCDF'$H'YO]      ";
-    let expected_message_str = "ABCDF'$H'YO";
-    let message = EchoResponse::from(message_str).unwrap();
-    assert_eq!(String::from(expected_message_str), *message.echo())
+    let message_error = EchoResponse::from(message_str).err().unwrap();
+    assert_eq!("Cannot read echo \"  [echo:ABCDF'$H'YO]      \"", &message_error[..])
 }
 
 #[test]

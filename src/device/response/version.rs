@@ -24,7 +24,7 @@ impl VersionResponse {
         // check if message has the correct syntax
         // and return the unwrapped value
         // "[Version:<value>]"
-        if trimmed_message.starts_with("[VER:") && trimmed_message.ends_with("]") {
+        if VersionResponse::is_response(&trimmed_message) {
             let message_end = trimmed_message.len()-1;
             let message_payload = &trimmed_message[5..message_end];
             let version_segements: Vec<&str> = message_payload.split(":").collect();
@@ -44,6 +44,11 @@ impl VersionResponse {
             })    
         }
         Err(format!("Could not read version: {}", message))        
+    }
+
+    /// Indicates if message has required version outline
+    pub fn is_response(message: &str) -> bool {
+        message.starts_with("[VER:") && message.ends_with("]")
     }
     
     pub fn version(&self) -> &String {

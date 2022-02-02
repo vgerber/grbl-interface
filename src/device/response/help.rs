@@ -19,15 +19,14 @@ impl HelpResponse {
     /// let response = GCodeStateResponse::from("[HLP:$$ $# $G $I $N]");
     /// ```
     pub fn from(message: &str) -> Result<HelpResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
 
         // check if message has the correct syntax
         // and return the unwrapped value
         // "[HLP:<value> <value> ... <value>]"
-        if trimmed_message.starts_with("[HLP:") && trimmed_message.ends_with("]") {
+        if HelpResponse::is_response(message) {
             // remove wrapper characters
-            let message_end = trimmed_message.len()-1;
-            let message_payload = &trimmed_message[5..message_end];
+            let message_end = message.len()-1;
+            let message_payload = &message[5..message_end];
 
             // read all sub values in remaining message
             let message_values: Vec<String> = message_payload.split(" ").filter(|s| s.len() > 0).map(|s| s.to_string()).collect();
@@ -36,10 +35,12 @@ impl HelpResponse {
                 values: message_values
             })    
         }
+        Err(format!("Could not read help message \"{}\"", message))        
+    }
 
-        let mut error_str = String::from("Could not read message: ");
-        error_str.push_str(&trimmed_message);
-        Err(error_str)        
+    /// Indicates if message has required help outline
+    pub fn is_response(message: &str) -> bool {
+        message.starts_with("[HLP:") && message.ends_with("]")
     }
     
     pub fn values(&self) -> &Vec<String> {

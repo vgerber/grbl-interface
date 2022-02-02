@@ -18,20 +18,24 @@ impl EchoResponse {
     /// let response = MessageResponse::from("[echo:Hello]");
     /// ```
     pub fn from(message: &str) -> Result<EchoResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
 
         // check if message has the correct syntax
         // and return the unwrapped value
         // "[echo:<value>]"
-        if trimmed_message.starts_with("[echo:") && trimmed_message.ends_with("]") {
-            let message_end = trimmed_message.len()-1;
-            let message_payload = &trimmed_message[6..message_end];
+        if EchoResponse::is_response(message) {
+            let message_end = message.len()-1;
+            let message_payload = &message[6..message_end];
             return Ok(EchoResponse {
                 echo: String::from(message_payload)
             })    
         }
 
-        Err(format!("Cannot read echo \"{}\"", trimmed_message))        
+        Err(format!("Cannot read echo \"{}\"", message))        
+    }
+
+    /// Indicates if message has required echo outline
+    pub fn is_response(message: &str) -> bool {
+        message.starts_with("[echo:") && message.ends_with("]")
     }
     
     pub fn echo(&self) -> &String {

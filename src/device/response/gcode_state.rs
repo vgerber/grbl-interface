@@ -17,15 +17,14 @@ impl GCodeStateResponse {
     /// let response = GCodeStateResponse::from("[GC:G0 G54 G17 G21]");
     /// ```
     pub fn from(message: &str) -> Result<GCodeStateResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
 
         // check if message has the correct syntax
         // and return the unwrapped value
         // "[GC:<value> <value> ... <value>]"
-        if trimmed_message.starts_with("[GC:") && trimmed_message.ends_with("]") {
+        if GCodeStateResponse::is_response(message) {
             // remove wrapper characters
-            let message_end = trimmed_message.len()-1;
-            let message_payload = &trimmed_message[4..message_end];
+            let message_end = message.len()-1;
+            let message_payload = &message[4..message_end];
 
             // read all sub values in remaining message
             let message_values: Vec<String> = message_payload.split(" ").filter(|s| s.len() > 0).map(|s| s.to_string()).collect();
@@ -34,10 +33,12 @@ impl GCodeStateResponse {
                 values: message_values
             })    
         }
+        Err(format!("Could not read gcode state message \"{}\"", message))        
+    }
 
-        let mut error_str = String::from("Could not read message: ");
-        error_str.push_str(&trimmed_message);
-        Err(error_str)        
+    /// Indicates if message has required gcode prefix
+    pub fn is_response(message: &str) -> bool {
+        message.starts_with("[GC:") && message.ends_with("]")
     }
     
     pub fn values(&self) -> &Vec<String> {
