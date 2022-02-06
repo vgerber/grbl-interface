@@ -5,3 +5,4 @@ pub mod version_test;
 pub mod compile_option_test;
 pub mod echo_test;
 pub mod startup_test;
+pub mod report_test;

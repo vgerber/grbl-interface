@@ -1,60 +1,5 @@
-pub mod machine_status;
-pub mod signal;
-pub mod accessory;
-
 use std::result::Result;
-use crate::device::axis::Axis;
-use self::{machine_status::MachineStatus, signal::MachineSignal, accessory::AccessoryState};
-
-pub enum PendantControl {
-    Released,
-    Taken,
-}
-
-pub enum ArcMode {
-    Radius,
-    Diameter,
-}
-
-pub fn get_pendant_control(state: i8) -> Result<PendantControl, String> {
-    match state {
-        0 => Ok(PendantControl::Released),
-        1 => Ok(PendantControl::Taken),
-        _ => Err(format!("Unknon pendant control state {}", state))
-    }
-}
-
-pub fn get_arc_mode(mode: &str) -> Result<ArcMode, String> {
-    match mode {
-        "0" => Ok(ArcMode::Radius),
-        "1" => Ok(ArcMode::Diameter),
-        _ => Err(format!("Unknown arc mode \"{}\"", mode))
-    }
-}
-
-pub struct MachinePosition(f32, f32, f32);
-
-pub struct BufferState {
-    block_buffers_free: i32,
-    rx_buffers_free: i32,
-}
-
-pub struct HomingState {
-    completed: bool,
-    axis_bitmask: i32,
-}
-
-pub struct MachineSpeed {
-    feed_rate: i32,
-    spindel_programmed_rpm: i32,
-    spindel_actual_rpm: Option<i32>
-}
-
-pub struct OverrideValues {
-    feed_rate_percentage: i32,
-    rapids_percentage: i32,
-    spindle_speed_percentage: i32
-}
+use crate::device::{axis::Axis, state::{machine::{state::MachineState, position::MachinePosition, speed::MachineSpeed,}, buffer::BufferState, signal::MachineSignal, accessory::AccessoryState, pendant::PendantControl, homing::HomingState, overrides::Overrides}};
 
 /// Reponse for report message
 /// 
@@ -62,7 +7,7 @@ pub struct OverrideValues {
 /// * Add "In:<result>" messages
 pub struct ReportResponse {
     /// <Status>[:Sub Status]
-    machine_status: MachineStatus,
+    machine_status: MachineState,
 
     /// MPos: Absolute position in machine workspace
     global_position: Option<MachinePosition>,
@@ -78,11 +23,11 @@ pub struct ReportResponse {
     machine_speed: Option<MachineSpeed>,
     machine_signals: Option<Vec<MachineSignal>>,
     machine_coordinate_system: Option<String>,
-    override_values: Option<OverrideValues>, 
+    override_values: Option<Overrides>, 
     accessory_state: Option<AccessoryState>,
     pendant_control: Option<PendantControl>,
     homing_state: Option<HomingState>,
-    scaled_axis: Option<Vec<Axis>>,
+    scaled_axes: Option<Vec<Axis>>,
     tool_length_reference_offset_set: Option<bool>,
     firmware: Option<String>,
 
@@ -91,8 +36,6 @@ pub struct ReportResponse {
 impl ReportResponse {
 
     /// Reads startup line reponse and status
-    /// 
-    /// Performs trimming before syntax checks
     /// 
     /// # Examples
     /// Basic usage:
@@ -106,5 +49,85 @@ impl ReportResponse {
 
     pub fn is_report_response(message: &str) -> bool {
         message.starts_with("<") && message.ends_with(">")
+    }
+
+    /// Get a reference to the report response's machine status.
+    pub fn machine_status(&self) -> &MachineState {
+        &self.machine_status
+    }
+
+    /// Get a reference to the report response's global position.
+    pub fn global_position(&self) -> Option<&MachinePosition> {
+        self.global_position.as_ref()
+    }
+
+    /// Get a reference to the report response's local position.
+    pub fn local_position(&self) -> Option<&MachinePosition> {
+        self.local_position.as_ref()
+    }
+
+    /// Get a reference to the report response's local offset.
+    pub fn local_offset(&self) -> Option<&MachinePosition> {
+        self.local_offset.as_ref()
+    }
+
+    /// Get a reference to the report response's buffer state.
+    pub fn buffer_state(&self) -> Option<&BufferState> {
+        self.buffer_state.as_ref()
+    }
+
+    /// Get a reference to the report response's line number.
+    pub fn line_number(&self) -> Option<i32> {
+        self.line_number
+    }
+
+    /// Get a reference to the report response's machine speed.
+    pub fn machine_speed(&self) -> Option<&MachineSpeed> {
+        self.machine_speed.as_ref()
+    }
+
+    /// Get a reference to the report response's machine signals.
+    pub fn machine_signals(&self) -> Option<&Vec<MachineSignal>> {
+        self.machine_signals.as_ref()
+    }
+
+    /// Get a reference to the report response's machine coordinate system.
+    pub fn machine_coordinate_system(&self) -> Option<&String> {
+        self.machine_coordinate_system.as_ref()
+    }
+
+    /// Get a reference to the report response's override values.
+    pub fn override_values(&self) -> Option<&Overrides> {
+        self.override_values.as_ref()
+    }
+
+    /// Get a reference to the report response's accessory state.
+    pub fn accessory_state(&self) -> Option<&AccessoryState> {
+        self.accessory_state.as_ref()
+    }
+
+    /// Get a reference to the report response's pendant control.
+    pub fn pendant_control(&self) -> Option<&PendantControl> {
+        self.pendant_control.as_ref()
+    }
+
+    /// Get a reference to the report response's homing state.
+    pub fn homing_state(&self) -> Option<&HomingState> {
+        self.homing_state.as_ref()
+    }
+
+    /// Get a reference to the report response's scaled axis.
+    pub fn scaled_axes(&self) -> Option<&Vec<Axis>> {
+        self.scaled_axes.as_ref()
+    }
+
+    /// Get a reference to the report response's tool length reference offset set.
+    pub fn tool_length_reference_offset_set(&self) -> Option<bool> {
+        self.tool_length_reference_offset_set
+    }
+
+    /// Get a reference to the report response's firmware.
+    pub fn firmware(&self) -> Option<&String> {
+        self.firmware.as_ref()
     }
 }
