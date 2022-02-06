@@ -10,3 +10,4 @@ pub mod gcode;
 pub mod input;
 pub mod firmware;
 pub mod tool;
+pub mod compile;

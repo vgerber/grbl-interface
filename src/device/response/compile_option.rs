@@ -1,49 +1,14 @@
 use std::result::Result;
 
-// All available compile options for grbl 1.1 firmware
-pub enum CompileOption {
-    VariableSpindleEnabled,
-    LineNumbersEnabled,
-    MistCoolantEnabled,
-    CoreXYEnabled,
-    ParkingMotionEnabled,
-    HomingForceOriginEnabled,
-    HomingSingleAxisEnabled,
-    TwoLimitSwitchOnAxisEnabled,
-    AllowFeedRateOverridesInProbeCycles,
-    RestoreAllEEPROMDisabled,
-    RestoreEEPROMDollarSettingsDisabled,
-    RestoreEEPROMParameterDataDisabled,
-    BuildInfoWriteUserStringDisabled,
-    ForceSyncEEPROMWriteDisabled,
-    ForceSyncWorkCoordinateOffsetChangeDisabled,
-    AlarmStateOnPowerUpWhenHomingInitLock,
-    DualAxisMotorsWithSelfSquaringEnabled,
-}
+use crate::device::{axis::MAX_AXES, state::compile::{CompileOption, get_compile_option, ExtendedCompileOption, get_extended_compile_option}};
 
-/// Get compile option enum from option value
-pub fn get_compile_option(option: &str) -> Result<CompileOption, String> {
-    match option {
-        "V" => Ok(CompileOption::VariableSpindleEnabled),
-        "N" => Ok(CompileOption::LineNumbersEnabled),
-        "M" => Ok(CompileOption::MistCoolantEnabled),
-        "C" => Ok(CompileOption::CoreXYEnabled),
-        "P" => Ok(CompileOption::ParkingMotionEnabled),
-        "Z" => Ok(CompileOption::HomingForceOriginEnabled),
-        "H" => Ok(CompileOption::HomingSingleAxisEnabled),
-        "T" => Ok(CompileOption::TwoLimitSwitchOnAxisEnabled),
-        "A" => Ok(CompileOption::AllowFeedRateOverridesInProbeCycles),
-        "*" => Ok(CompileOption::RestoreAllEEPROMDisabled),
-        "$" => Ok(CompileOption::RestoreEEPROMDollarSettingsDisabled),
-        "#" => Ok(CompileOption::RestoreEEPROMParameterDataDisabled),
-        "I" => Ok(CompileOption::BuildInfoWriteUserStringDisabled),
-        "E" => Ok(CompileOption::ForceSyncEEPROMWriteDisabled),
-        "W" => Ok(CompileOption::ForceSyncWorkCoordinateOffsetChangeDisabled),
-        "L" => Ok(CompileOption::AlarmStateOnPowerUpWhenHomingInitLock),
-        "2" => Ok(CompileOption::DualAxisMotorsWithSelfSquaringEnabled),
-        o => Err(format!("Invalid option {}", o)),
-    }
-}
+const COMPILE_OPTION_SUFFIX: &str = "]";
+const COMPILE_OPTION_PREFIX: &str = "[OPT:";
+const EXTENDED_COMPILE_OPTION_SUFFIX: &str = "]";
+const EXTENDED_COMPILE_OPTION_PREFIX: &str = "[NEWOPT:";
+
+// All available compile options for grbl 1.1 firmware
+
 
 /// Stores values from parsed help message "[OPT: ...\]"
 pub struct CompileOptionsResponse {
@@ -51,14 +16,14 @@ pub struct CompileOptionsResponse {
     unknown_options: Vec<String>,
     block_buffer_size: i32,
     rx_buffer_size: i32,
+    axes_count: Option<i32>,
+    tool_table_entries_count: Option<i32>
 }
 
 
 impl CompileOptionsResponse {
 
     /// Reads compile options string and returns its sub elements
-    /// 
-    /// Performs trimming before syntax checks
     /// 
     /// # Examples
     /// Basic usage:
@@ -70,22 +35,20 @@ impl CompileOptionsResponse {
     /// let response = CompileOptionsResponse::from("[OPT:VL,15,128]");
     /// ```
     pub fn from(message: &str) -> Result<CompileOptionsResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
-
         // check if message has the correct syntax
         // and return the unwrapped value
-        // "[OPT:<options>,<block size>,<rx size>]"
-        if trimmed_message.starts_with("[OPT:") && trimmed_message.ends_with("]") {
+        // "[OPT:<options>,<block size>,<rx size>{,<axes>,<tools>}]"
+        if CompileOptionsResponse::is_compile_options(message) {
             // remove wrapper characters
-            let message_end = trimmed_message.len()-1;
-            let message_payload = &trimmed_message[5..message_end];
+            let message_end = message.len()-1;
+            let message_payload = &message[5..message_end];
 
             // read all sub values in remaining message
             // compile options could be empty and therefore is not filtered out
             let message_values: Vec<String> = message_payload.split(",").map(|s| s.to_string()).collect();
             
             // format should only contain the three defined options properties
-            if message_values.len() != 3 {
+            if message_values.len() > 5 || message_values.len() < 3 {
                 return Err(format!("Invalid compile options string \"{}\"", message_payload));
             }
             
@@ -103,15 +66,45 @@ impl CompileOptionsResponse {
                 Ok(buffer_size) => buffer_size,
                 Err(_) => return Err(format!("Invalid rx buffer size \"{}\"", message_values[2]))
             };
+
+            // read axes count
+            let mut axes_count: Option<i32> = None;
+            if message_values.len() >= 4 {
+                let axes_count_value = match message_values[3].parse() {
+                    Ok(value) => value,
+                    Err(_) => return Err(format!("Invalid axes count value \"{}\"", message_values[3])),
+                };
+
+                if axes_count_value < 1 && axes_count_value > MAX_AXES as i32 {
+                    return Err(format!("Invalid axes count {}", axes_count_value));
+                }
+                axes_count = Some(axes_count_value)
+            }
+
+            // read tool table entries
+            let mut tool_table_entries_count: Option<i32> = None;
+            if message_values.len() >= 5 {
+                let tool_table_entries_count_value = match message_values[4].parse() {
+                    Ok(value) => value,
+                    Err(_) => return Err(format!("Invalid tool table entries count value \"{}\"", message_values[4])),
+                };
+
+                if tool_table_entries_count_value < 1 && tool_table_entries_count_value > MAX_AXES as i32 {
+                    return Err(format!("Invalid axes count {}", tool_table_entries_count_value));
+                }
+                tool_table_entries_count = Some(tool_table_entries_count_value)
+            }
             
             return Ok(CompileOptionsResponse {
                 options: compile_options.0,
                 unknown_options: compile_options.1,
                 block_buffer_size,
-                rx_buffer_size
+                rx_buffer_size,
+                axes_count,
+                tool_table_entries_count
             })    
         }
-        Err(format!("Could not read compile options \"{}\"", trimmed_message))        
+        Err(format!("Could not read compile options \"{}\"", message))        
     }
 
     /// Parses options string and returns interpreted compile options and unkown compile options
@@ -135,6 +128,11 @@ impl CompileOptionsResponse {
 
         (compile_options, unknown_compile_options)
     }
+
+    /// Indicates if message has compile options syntax
+    pub fn is_compile_options(message: &str) -> bool {
+        message.starts_with(COMPILE_OPTION_PREFIX) && message.ends_with(COMPILE_OPTION_SUFFIX)
+    }
     
     pub fn options(&self) -> &Vec<CompileOption> {
         &self.options
@@ -151,4 +149,46 @@ impl CompileOptionsResponse {
     pub fn rx_buffer_size(&self) -> i32 {
         self.rx_buffer_size
     }
+
+    /// Get a reference to the compile options response's axes count.
+    pub fn axes_count(&self) -> Option<i32> {
+        self.axes_count
+    }
+
+    /// Get a reference to the compile options response's tool table entries count.
+    pub fn tool_table_entries_count(&self) -> Option<i32> {
+        self.tool_table_entries_count
+    }
+}
+
+/// Reads extended compile options string and returns all options
+/// 
+/// # Examples
+/// Basic usage:
+/// ```
+/// // stores:
+/// // Ethernet enabled, Wifi enabeld, Homing enabled
+/// let response = CompileOptionsResponse::from("[NEWOPT:ETH,WIFI,HOME]");
+/// ```
+pub fn parse_extended_compile_options(message: &str) -> Result<Vec<ExtendedCompileOption>, String> {
+    if is_extended_compile_options(message) {
+        // parse comma seperate list of compile options
+        // quit on error
+        let options: Vec<&str> = (&message[EXTENDED_COMPILE_OPTION_PREFIX.len()..message.len()-1]).split(",").collect();
+        let mut compile_options: Vec<ExtendedCompileOption> = Vec::new();
+        for option in options {
+            compile_options.push(match get_extended_compile_option(option) {
+                Ok(o) => o,
+                Err(error) => return Err(format!("Cannot read extended compile options: \"{}\"", error))
+            });
+        }
+        return Ok(compile_options);
+
+    }
+    Err(format!("Cannot read extended compile options \"{}\"", message))
+}
+
+/// Indicates if message has extended compile options syntax
+pub fn is_extended_compile_options(message: &str) -> bool {
+    message.starts_with(EXTENDED_COMPILE_OPTION_PREFIX) && message.ends_with(EXTENDED_COMPILE_OPTION_SUFFIX)
 }

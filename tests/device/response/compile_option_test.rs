@@ -1,4 +1,4 @@
-use grbli::device::response::compile_option::*;
+use grbli::device::{response::compile_option::*, state::compile::CompileOption};
 
 
 #[test]
@@ -71,8 +71,8 @@ fn from_cannot_read_less_than_three_segements() {
 }
 
 #[test]
-fn from_cannot_read_more_than_three_segements() {
-    let message_str = "[OPT:,10,12,3]";
+fn from_cannot_read_more_than_five_segements() {
+    let message_str = "[OPT:,10,12,3,3,10]";
     let message_error = CompileOptionsResponse::from(message_str).err().unwrap();
-    assert_eq!("Invalid compile options string \",10,12,3\"", &message_error[..])
+    assert_eq!("Invalid compile options string \",10,12,3,3,10\"", &message_error[..])
 }

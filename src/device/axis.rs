@@ -1,10 +1,10 @@
 use std::result::Result;
 
 /// Maximum amount of axes, available in grbl
-pub const MAX_AXIS: usize = 6;
+pub const MAX_AXES: usize = 6;
 
 /// Minimum amount of axes, available in grbl
-pub const MIN_AXIS: usize = 1;
+pub const MIN_AXES: usize = 1;
 
 pub enum Axis {
     X,

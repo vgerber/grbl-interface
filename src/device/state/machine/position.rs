@@ -1,4 +1,4 @@
-use crate::device::axis::{MAX_AXIS, MIN_AXIS, Axis, get_axis};
+use crate::device::axis::{MAX_AXES, MIN_AXES, Axis, get_axis};
 
 const POSITION_LOCAL_PREFIX: &str = "WPos:";
 const POSITION_LOCAL_OFFSET_PREFIX: &str = "WCO:";
@@ -19,7 +19,7 @@ pub type MachinePosition = Vec<f32>;
 pub fn parse_position(position: &str) -> Result<MachinePosition, String> {
     let axis_strings: Vec<&str> = position.split(",").collect();
     let mut axis_values: MachinePosition = Vec::new();
-    if axis_strings.len() >= MIN_AXIS && axis_strings.len() <= MAX_AXIS {
+    if axis_strings.len() >= MIN_AXES && axis_strings.len() <= MAX_AXES {
         for (axis_index, axis_string) in axis_strings.iter().enumerate() {
             axis_values.push(match axis_string.parse() {
                 Ok(value) => value,
@@ -28,7 +28,7 @@ pub fn parse_position(position: &str) -> Result<MachinePosition, String> {
         }
         return Ok(axis_values);
     }
-    Err(format!("Invalid count of axis in \"{}\" ({} <= x <= {})", position, MIN_AXIS, MAX_AXIS))
+    Err(format!("Invalid count of axis in \"{}\" ({} <= x <= {})", position, MIN_AXES, MAX_AXES))
 }
 
 /// Creates position from "WPos:\<float\>,\<float\>,\<float\>,..."
