@@ -12,7 +12,7 @@ const INPUT_WAIT_RESULT_PREFIX: &str = "In:";
 /// let input_wait_result = parse_input_wait_result_succeded("In:0");
 /// let input_wait_result = parse_input_wait_result_succeded("In:1");
 /// ```
-pub fn parse_input_wait_result_succeded(message: &str) -> Result<bool, String> {
+pub fn parse_input_wait_result(message: &str) -> Result<bool, String> {
     if is_input_wait_result(message) {
         let input_wait_result_message: &str = &message[INPUT_WAIT_RESULT_PREFIX.len()..];
         let input_wait_result: i8 = match input_wait_result_message.parse() {
