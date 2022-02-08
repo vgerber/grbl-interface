@@ -174,8 +174,13 @@ pub fn parse_extended_compile_options(message: &str) -> Result<Vec<ExtendedCompi
     if is_extended_compile_options(message) {
         // parse comma seperate list of compile options
         // quit on error
-        let options: Vec<&str> = (&message[EXTENDED_COMPILE_OPTION_PREFIX.len()..message.len()-1]).split(",").collect();
         let mut compile_options: Vec<ExtendedCompileOption> = Vec::new();
+        let options_message = &message[EXTENDED_COMPILE_OPTION_PREFIX.len()..message.len()-1];
+        if options_message.len() == 0 {
+            return Ok(compile_options);
+        }
+
+        let options: Vec<&str> = options_message.split(",").collect();
         for option in options {
             compile_options.push(match get_extended_compile_option(option) {
                 Ok(o) => o,
