@@ -79,7 +79,7 @@ pub fn parse_local_position_offset(position: &str) -> Result<MachinePosition, St
     if is_local_position_offset(position) {
         return parse_position(&position[POSITION_LOCAL_OFFSET_PREFIX.len()..]);
     }
-    Err(format!("Position is not a local position offset \"{}\"", position))
+    Err(format!("Position is not a local position offset message \"{}\"", position))
 }   
 
 /// Indicates if position starts with "WCO:"

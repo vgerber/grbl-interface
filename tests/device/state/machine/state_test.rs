@@ -1,8 +1,6 @@
 use grbli::device::state::machine::state::{MachineState, MachineStateName};
 
 
-
-
 #[test]
 fn from_parses_status_and_sub_status_correctly() {
     let message_str = "Home:1";
