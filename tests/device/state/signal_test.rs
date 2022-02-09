@@ -1,4 +1,4 @@
-use grbli::device::state::{tool::parse_tool_length_reference, signal::{parse_machine_signal, MachineSignal}};
+use grbli::device::state::{ signal::{parse_machine_signal, MachineSignal}};
 
 
 
