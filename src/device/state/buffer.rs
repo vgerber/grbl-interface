@@ -22,6 +22,10 @@ impl BufferState {
         if BufferState::is_buffer_state(message) {
             let values: Vec<&str> = (&message[BUFFER_STATE_PREFIX.len()..]).split(",").collect();
             
+            if values.len() != 2 {
+                return Err(format!("Invalid buffer states count {}", values.len()));
+            }
+
             let block_buffers: i32 = match values[0].parse() {
                 Ok(value) => value,
                 Err(_) => return Err(format!("Cannot read block buffers free \"{}\"", values[0]))
