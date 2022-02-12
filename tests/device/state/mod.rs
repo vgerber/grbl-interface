@@ -8,3 +8,4 @@ pub mod firmware_test;
 pub mod modes_test;
 pub mod input_test;
 pub mod homing_test;
+pub mod gcode_test;

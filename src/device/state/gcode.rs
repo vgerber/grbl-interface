@@ -17,7 +17,7 @@ pub fn parse_line_number(message: &str) -> Result<i32, String> {
             Err(_) => Err(format!("Cannot read line number \"{}\"", line_number_str))
         };
     }
-    Err(format!("Cannot read line numer \"{}\"", message))
+    Err(format!("Cannot read line number \"{}\"", message))
 }
 
 /// Indicates if message starts with "Ln:"
