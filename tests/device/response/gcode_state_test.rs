@@ -14,7 +14,7 @@ fn from_parses_message_correctly() {
 fn from_does_not_apply_trimming() {
     let message_str = "  [GC:AB CD F ' $H 'YO]                  ";
     let message_error = GCodeStateResponse::from(message_str).err().unwrap();
-    assert_eq!("Could not read gcode state message \"  [GC:AB CD F ' $H 'YO]                  \"", &message_error[..])
+    assert_eq!("Cannot read gcode state message \"  [GC:AB CD F ' $H 'YO]                  \"", &message_error[..])
 }
 
 #[test]
@@ -39,7 +39,7 @@ fn from_fails_on_missing_prefix() {
     let message = GCodeStateResponse::from(message_str);
     assert!(message.is_err());
     let message_error = message.err().unwrap();
-    assert_eq!("Could not read gcode state message \"AB CD F ' $H 'YO]\"", &message_error[..])
+    assert_eq!("Cannot read gcode state message \"AB CD F ' $H 'YO]\"", &message_error[..])
 }
 
 #[test]
@@ -48,5 +48,5 @@ fn from_fails_on_missing_suffix() {
     let message = GCodeStateResponse::from(message_str);
     assert!(message.is_err());
     let message_error = message.err().unwrap();
-    assert_eq!("Could not read gcode state message \"[GC:AB CD F ' $H 'YO\"", &message_error[..])
+    assert_eq!("Cannot read gcode state message \"[GC:AB CD F ' $H 'YO\"", &message_error[..])
 }

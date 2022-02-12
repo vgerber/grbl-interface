@@ -30,7 +30,7 @@ impl MessageResponse {
                 message: String::from(message_payload)
             })    
         }
-        Err(format!("Could not read message \"{}\"", message))        
+        Err(format!("Cannot read message \"{}\"", message))        
     }
 
     /// Indicates if message has required message outline

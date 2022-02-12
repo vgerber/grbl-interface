@@ -60,7 +60,7 @@ impl StartupResponse {
                 result,
             })
         }
-        Err(format!("Could not read startup \"{}\"", message))        
+        Err(format!("Cannot read startup \"{}\"", message))        
     }
 
     /// Indicates if message has required startup prefix

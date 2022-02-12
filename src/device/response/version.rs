@@ -43,7 +43,7 @@ impl VersionResponse {
                 name,
             })    
         }
-        Err(format!("Could not read version \"{}\"", message))        
+        Err(format!("Cannot read version \"{}\"", message))        
     }
 
     /// Indicates if message has required version outline

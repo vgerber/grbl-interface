@@ -22,15 +22,15 @@ impl Overrides {
             }
             let feed_rate: i32 = match values[0].parse() {
                 Ok(value) => value,
-                Err(_) => return Err(format!("Could not read feed rate override \"{}\"", values[0]))
+                Err(_) => return Err(format!("Cannot read feed rate override \"{}\"", values[0]))
             };
             let rapids: i32 = match values[1].parse() {
                 Ok(value) => value,
-                Err(_) => return Err(format!("Could not read rapids override \"{}\"", values[1]))
+                Err(_) => return Err(format!("Cannot read rapids override \"{}\"", values[1]))
             };
             let spindle_speed: i32 = match values[2].parse() {
                 Ok(value) => value,
-                Err(_) => return Err(format!("Could not read spindle speed override \"{}\"", values[2]))
+                Err(_) => return Err(format!("Cannot read spindle speed override \"{}\"", values[2]))
             };
             return Ok(Overrides {
                 feed_rate_percentage: feed_rate,
@@ -38,7 +38,7 @@ impl Overrides {
                 spindle_speed_percentage: spindle_speed,
             })
         }
-        Err(format!("Could not read overrides \"{}\"", message))
+        Err(format!("Cannot read overrides \"{}\"", message))
     }
 
     pub fn is_overrides_values(message: &str) -> bool {

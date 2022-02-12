@@ -35,7 +35,7 @@ impl GCodeStateResponse {
                 values: message_values
             })    
         }
-        Err(format!("Could not read gcode state message \"{}\"", message))        
+        Err(format!("Cannot read gcode state message \"{}\"", message))        
     }
 
     /// Indicates if message has required gcode prefix

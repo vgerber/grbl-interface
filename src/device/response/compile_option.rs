@@ -103,7 +103,7 @@ impl CompileOptionsResponse {
                 tool_table_entries_count
             })    
         }
-        Err(format!("Could not read compile options \"{}\"", message))        
+        Err(format!("Cannot read compile options \"{}\"", message))        
     }
 
     /// Parses options string and returns interpreted compile options and unkown compile options

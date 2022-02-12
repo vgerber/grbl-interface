@@ -37,7 +37,7 @@ fn from_parses_error_without_code_correctly() {
 fn from_does_not_apply_trimming() {
     let message_str = "  >ABC:ok      ";
     let message_error = StartupResponse::from(message_str).err().unwrap();
-    assert_eq!("Could not read startup \"  >ABC:ok      \"", &message_error[..])
+    assert_eq!("Cannot read startup \"  >ABC:ok      \"", &message_error[..])
 }
 
 #[test]
@@ -61,7 +61,7 @@ fn from_fails_on_missing_prefix() {
     let message = StartupResponse::from(message_str);
     assert!(message.is_err());
     let message_error = message.err().unwrap();
-    assert_eq!("Could not read startup \"G23:ok\"", &message_error[..])
+    assert_eq!("Cannot read startup \"G23:ok\"", &message_error[..])
 }
 
 #[test]

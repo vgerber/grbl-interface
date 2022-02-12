@@ -34,26 +34,26 @@ fn from_fails_on_less_than_three_options() {
 fn from_fails_on_invalid_feed_rate() {
     let message_str = "Ov:a,1,2";
     let message_error = Overrides::from(message_str).err().unwrap();
-    assert_eq!("Could not read feed rate override \"a\"", &message_error[..])
+    assert_eq!("Cannot read feed rate override \"a\"", &message_error[..])
 }
 
 #[test]
 fn from_fails_on_invalid_rapids() {
     let message_str = "Ov:1,b,2";
     let message_error = Overrides::from(message_str).err().unwrap();
-    assert_eq!("Could not read rapids override \"b\"", &message_error[..])
+    assert_eq!("Cannot read rapids override \"b\"", &message_error[..])
 }
 
 #[test]
 fn from_fails_on_invalid_spindle_speed() {
     let message_str = "Ov:1,2,c";
     let message_error = Overrides::from(message_str).err().unwrap();
-    assert_eq!("Could not read spindle speed override \"c\"", &message_error[..])
+    assert_eq!("Cannot read spindle speed override \"c\"", &message_error[..])
 }
 
 #[test]
 fn from_fails_on_invalid_prefix() {
     let message_str = "v:1,2,3";
     let message_error = Overrides::from(message_str).err().unwrap();
-    assert_eq!("Could not read overrides \"v:1,2,3\"", &message_error[..])
+    assert_eq!("Cannot read overrides \"v:1,2,3\"", &message_error[..])
 }

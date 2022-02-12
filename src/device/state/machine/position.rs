@@ -23,7 +23,7 @@ pub fn parse_position(position: &str) -> Result<MachinePosition, String> {
         for (axis_index, axis_string) in axis_strings.iter().enumerate() {
             axis_values.push(match axis_string.parse() {
                 Ok(value) => value,
-                Err(_) => return Err(format!("Could not read axis:{} \"{}\"", axis_index, axis_string))
+                Err(_) => return Err(format!("Cannot read axis:{} \"{}\"", axis_index, axis_string))
             })
         }
         return Ok(axis_values);

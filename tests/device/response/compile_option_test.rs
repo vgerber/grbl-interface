@@ -81,14 +81,14 @@ fn co_from_cannot_read_more_than_five_segements() {
 fn co_from_cfails_on_invalid_prefix() {
     let message_str = "OPT:10,12,3,3,10]";
     let message_error = CompileOptionsResponse::from(message_str).err().unwrap();
-    assert_eq!("Could not read compile options \"OPT:10,12,3,3,10]\"", &message_error[..])
+    assert_eq!("Cannot read compile options \"OPT:10,12,3,3,10]\"", &message_error[..])
 }
 
 #[test]
 fn co_from_cfails_on_invalid_suffix() {
     let message_str = "[OPT:10,12,3,3,10";
     let message_error = CompileOptionsResponse::from(message_str).err().unwrap();
-    assert_eq!("Could not read compile options \"[OPT:10,12,3,3,10\"", &message_error[..])
+    assert_eq!("Cannot read compile options \"[OPT:10,12,3,3,10\"", &message_error[..])
 }
 
 #[test]

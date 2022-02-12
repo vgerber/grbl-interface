@@ -18,14 +18,14 @@ fn parse_position_returns_all_axis() {
 fn parse_position_requires_at_least_one_axis() {
     let message_str = "";
     let error = parse_position(message_str).err().unwrap();
-    assert_eq!("Could not read axis:0 \"\"", error)
+    assert_eq!("Cannot read axis:0 \"\"", error)
 }
 
 #[test]
 fn parse_position_fails_on_invalid_axis_value() {
     let message_str = "1,2,v,4";
     let error = parse_position(message_str).err().unwrap();
-    assert_eq!("Could not read axis:2 \"v\"", error)
+    assert_eq!("Cannot read axis:2 \"v\"", error)
 }
 
 #[test]

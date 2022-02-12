@@ -37,7 +37,7 @@ impl HelpResponse {
                 values: message_values
             })    
         }
-        Err(format!("Could not read help message \"{}\"", message))        
+        Err(format!("Cannot read help message \"{}\"", message))        
     }
 
     /// Indicates if message has required help outline

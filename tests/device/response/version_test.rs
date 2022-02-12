@@ -13,7 +13,7 @@ fn from_parses_message_correctly() {
 fn from_does_not_apply_trimming() {
     let message_str = "  [VER:0.1223d.234f:test]      ";
     let error = VersionResponse::from(message_str).err().unwrap();
-    assert_eq!("Could not read version \"  [VER:0.1223d.234f:test]      \"", error);
+    assert_eq!("Cannot read version \"  [VER:0.1223d.234f:test]      \"", error);
 }
 
 #[test]
@@ -45,7 +45,7 @@ fn from_fails_on_missing_prefix() {
     let message = VersionResponse::from(message_str);
     assert!(message.is_err());
     let message_error = message.err().unwrap();
-    assert_eq!("Could not read version \"0.1223d.234f:test]\"", &message_error[..])
+    assert_eq!("Cannot read version \"0.1223d.234f:test]\"", &message_error[..])
 }
 
 #[test]
@@ -54,7 +54,7 @@ fn from_fails_on_missing_suffix() {
     let message = VersionResponse::from(message_str);
     assert!(message.is_err());
     let message_error = message.err().unwrap();
-    assert_eq!("Could not read version \"[VER:0.1223d.234f:test\"", &message_error[..])
+    assert_eq!("Cannot read version \"[VER:0.1223d.234f:test\"", &message_error[..])
 }
 
 #[test]
