@@ -15,12 +15,21 @@ const INPUT_WAIT_RESULT_PREFIX: &str = "In:";
 pub fn parse_input_wait_result(message: &str) -> Result<bool, String> {
     if is_input_wait_result(message) {
         let input_wait_result_message: &str = &message[INPUT_WAIT_RESULT_PREFIX.len()..];
-        let input_wait_result: i8 = match input_wait_result_message.parse() {
+        let mut input_wait_result: i8 = match input_wait_result_message.parse() {
             Ok(value) => value,
             Err(_) => return Err(format!("Cannot read input wait result \"{}\"", input_wait_result_message))
         };
-        return Ok(input_wait_result >= 0);
+
+        input_wait_result = match input_wait_result {
+            -1..=1 => input_wait_result,
+            _ => return Err(format!("Cannot interpret input wait result \"{}\"", input_wait_result)),
+        };
+
+        return Ok(input_wait_result == 0 || input_wait_result == 1);
     }
+
+
+
     Err(format!("Cannot read input wait result \"{}\"", message))
 }
 

@@ -6,3 +6,5 @@ pub mod machine;
 pub mod buffer_test;
 pub mod firmware_test;
 pub mod modes_test;
+pub mod input_test;
+pub mod homing_test;

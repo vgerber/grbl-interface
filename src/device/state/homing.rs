@@ -29,7 +29,9 @@ impl HomingState {
             }
             
             let homed = match homing_state_strings[0].parse::<i8>() {
-                Ok(value) => value == 1,
+                Ok(1) => true,
+                Ok(0) => false,
+                Ok(_) => return Err(format!("Cannot read homing completion state \"{}\"", homing_state_strings[0])),
                 Err(_) => return Err(format!("Cannot read homing completion state \"{}\"", homing_state_strings[0])),
             };
 
