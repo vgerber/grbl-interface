@@ -1,5 +1,8 @@
 use std::result::Result;
 
+const HELP_PREFIX: &str = "[HLP:";
+const HELP_SUFFIX: &str = "]";
+
 /// Stores values from parsed help message "[HLP: ...\]"
 pub struct HelpResponse {
     values: Vec<String>
@@ -25,8 +28,7 @@ impl HelpResponse {
         // "[HLP:<value> <value> ... <value>]"
         if HelpResponse::is_response(message) {
             // remove wrapper characters
-            let message_end = message.len()-1;
-            let message_payload = &message[5..message_end];
+            let message_payload = message.strip_prefix(HELP_PREFIX).unwrap().strip_suffix(HELP_SUFFIX).unwrap();
 
             // read all sub values in remaining message
             let message_values: Vec<String> = message_payload.split(" ").filter(|s| s.len() > 0).map(|s| s.to_string()).collect();
@@ -40,7 +42,7 @@ impl HelpResponse {
 
     /// Indicates if message has required help outline
     pub fn is_response(message: &str) -> bool {
-        message.starts_with("[HLP:") && message.ends_with("]")
+        message.starts_with(HELP_PREFIX) && message.ends_with(HELP_SUFFIX)
     }
     
     pub fn values(&self) -> &Vec<String> {

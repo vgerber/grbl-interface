@@ -1,5 +1,7 @@
 use std::result::Result;
 
+const STARTUP_PREFIX: &str = ">";
+
 pub enum StartupResult {
     Ok,
     Error(i32)
@@ -23,13 +25,12 @@ impl StartupResponse {
     /// let response = StartupResponse::from(">G54G20:ok");
     /// ```
     pub fn from(message: &str) -> Result<StartupResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
 
         // check if message has the correct syntax
         // and return the unwrapped value
         // ">line:status:code"
-        if StartupResponse::is_response(&trimmed_message) {
-            let message_payload = &trimmed_message[1..];
+        if StartupResponse::is_response(&message) {
+            let message_payload = message.strip_prefix(STARTUP_PREFIX).unwrap();
             let segments: Vec<&str> = message_payload.split(":").collect();
             
             // expect <line>:<status>[:code]

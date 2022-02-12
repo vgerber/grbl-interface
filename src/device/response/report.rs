@@ -1,6 +1,9 @@
 use std::result::Result;
 use crate::device::{axis::Axis, state::{machine::{state::MachineState, position::{MachinePosition, is_local_position, is_global_position, parse_local_position, parse_global_position, is_local_position_offset, parse_local_position_offset, is_coordinate_system, parse_coordinate_system, is_scaled_axes, parse_scaled_axes}, speed::MachineSpeed,}, buffer::BufferState, signal::{MachineSignal, is_machine_signal, parse_machine_signal}, accessory::{AccessoryState, is_accessory_state, parse_accessory_state}, pendant::{PendantControl, is_pendant_control, parse_pendant_control}, homing::HomingState, overrides::Overrides, gcode::{is_line_number, parse_line_number}, modes::{is_arc_mode, ArcMode, parse_arc_mode}, tool::{is_tool_length_reference, parse_tool_length_reference}, firmware::{is_firmware, parse_firmware}, input::{is_input_wait_result, parse_input_wait_result}}};
 
+const REPORT_PREFIX: &str = "<";
+const REPORT_SUFFIX: &str = ">";
+
 /// Reponse for report message
 pub struct ReportResponse {
     /// <Status>[:Sub Status]
@@ -43,7 +46,7 @@ impl ReportResponse {
     /// ```
     pub fn from(message: &str) -> Result<ReportResponse, String> {
         if ReportResponse::is_report_response(message) {
-            let report_message = &message[1..message.len()-1];
+            let report_message = message.strip_prefix(REPORT_PREFIX).unwrap().strip_suffix(REPORT_SUFFIX).unwrap();
             let report_states: Vec<&str> = report_message.split("|").collect();
             return ReportResponse::parse_report_states(report_states);
         }
@@ -51,7 +54,7 @@ impl ReportResponse {
     }
 
     pub fn is_report_response(message: &str) -> bool {
-        message.starts_with("<") && message.ends_with(">")
+        message.starts_with(REPORT_PREFIX) && message.ends_with(REPORT_SUFFIX)
     }
 
     fn parse_report_states(states: Vec<&str>) -> Result<ReportResponse, String> {

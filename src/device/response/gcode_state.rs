@@ -1,5 +1,8 @@
 use std::result::Result;
 
+const GCODE_PREFIX: &str = "[GC:";
+const GCODE_SUFFIX: &str = "]";
+
 pub struct GCodeStateResponse {
     values: Vec<String>
 }
@@ -23,8 +26,7 @@ impl GCodeStateResponse {
         // "[GC:<value> <value> ... <value>]"
         if GCodeStateResponse::is_response(message) {
             // remove wrapper characters
-            let message_end = message.len()-1;
-            let message_payload = &message[4..message_end];
+            let message_payload = message.strip_prefix(GCODE_PREFIX).unwrap().strip_suffix(GCODE_SUFFIX).unwrap();
 
             // read all sub values in remaining message
             let message_values: Vec<String> = message_payload.split(" ").filter(|s| s.len() > 0).map(|s| s.to_string()).collect();
@@ -38,7 +40,7 @@ impl GCodeStateResponse {
 
     /// Indicates if message has required gcode prefix
     pub fn is_response(message: &str) -> bool {
-        message.starts_with("[GC:") && message.ends_with("]")
+        message.starts_with(GCODE_PREFIX) && message.ends_with(GCODE_SUFFIX)
     }
     
     pub fn values(&self) -> &Vec<String> {

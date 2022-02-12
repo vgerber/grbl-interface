@@ -40,8 +40,7 @@ impl CompileOptionsResponse {
         // "[OPT:<options>,<block size>,<rx size>{,<axes>,<tools>}]"
         if CompileOptionsResponse::is_compile_options(message) {
             // remove wrapper characters
-            let message_end = message.len()-1;
-            let message_payload = &message[5..message_end];
+            let message_payload = message.strip_prefix(COMPILE_OPTION_PREFIX).unwrap().strip_suffix(COMPILE_OPTION_SUFFIX).unwrap();
 
             // read all sub values in remaining message
             // compile options could be empty and therefore is not filtered out
@@ -175,7 +174,7 @@ pub fn parse_extended_compile_options(message: &str) -> Result<Vec<ExtendedCompi
         // parse comma seperate list of compile options
         // quit on error
         let mut compile_options: Vec<ExtendedCompileOption> = Vec::new();
-        let options_message = &message[EXTENDED_COMPILE_OPTION_PREFIX.len()..message.len()-1];
+        let options_message = message.strip_prefix(EXTENDED_COMPILE_OPTION_PREFIX).unwrap().strip_suffix(EXTENDED_COMPILE_OPTION_SUFFIX).unwrap();
         if options_message.len() == 0 {
             return Ok(compile_options);
         }

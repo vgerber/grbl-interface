@@ -1,5 +1,7 @@
 use std::result::Result;
 
+const MESSAGE_PREFIX: &str = "[MSG:";
+const MESSAGE_SUFFIX: &str = "]";
 
 pub struct MessageResponse {
     message: String,
@@ -23,8 +25,7 @@ impl MessageResponse {
         // and return the unwrapped value
         // "[MSG:<value>]"
         if MessageResponse::is_response(message) {
-            let message_end = message.len()-1;
-            let message_payload = &message[5..message_end];
+            let message_payload = message.strip_prefix(MESSAGE_PREFIX).unwrap().strip_suffix(MESSAGE_SUFFIX).unwrap();
             return Ok(MessageResponse {
                 message: String::from(message_payload)
             })    
@@ -34,7 +35,7 @@ impl MessageResponse {
 
     /// Indicates if message has required message outline
     pub fn is_response(message: &str) -> bool {
-        message.starts_with("[MSG:") && message.ends_with("]")
+        message.starts_with(MESSAGE_PREFIX) && message.ends_with(MESSAGE_SUFFIX)
     }
     
     pub fn message(&self) -> &String {

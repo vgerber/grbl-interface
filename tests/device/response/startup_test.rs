@@ -34,11 +34,10 @@ fn from_parses_error_without_code_correctly() {
 }
 
 #[test]
-fn from_applys_trimming() {
+fn from_does_not_apply_trimming() {
     let message_str = "  >ABC:ok      ";
-    let message = StartupResponse::from(message_str).unwrap();
-    assert_eq!(String::from("ABC"), *message.executed_line());
-    assert!(matches!(*message.result(), StartupResult::Ok))
+    let message_error = StartupResponse::from(message_str).err().unwrap();
+    assert_eq!("Could not read startup \"  >ABC:ok      \"", &message_error[..])
 }
 
 #[test]

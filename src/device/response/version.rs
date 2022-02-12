@@ -1,5 +1,7 @@
 use std::result::Result;
 
+const VERSION_PREFIX: &str = "[VER:";
+const VERSION_SUFFIX: &str = "]";
 
 pub struct VersionResponse {
     version: String,
@@ -19,19 +21,17 @@ impl VersionResponse {
     /// let response = VersionResponse::from("[VER:1.1:grbl]");
     /// ```
     pub fn from(message: &str) -> Result<VersionResponse, String> {
-        let trimmed_message = String::from(message).trim().to_owned();
 
         // check if message has the correct syntax
         // and return the unwrapped value
         // "[Version:<value>]"
-        if VersionResponse::is_response(&trimmed_message) {
-            let message_end = trimmed_message.len()-1;
-            let message_payload = &trimmed_message[5..message_end];
+        if VersionResponse::is_response(&message) {
+            let message_payload = message.strip_prefix(VERSION_PREFIX).unwrap().strip_suffix(VERSION_SUFFIX).unwrap();
             let version_segements: Vec<&str> = message_payload.split(":").collect();
             
             // expect <version>:<name>
             if version_segements.len() < 2 {
-                return Err(format!("Invalid count of version strings: \"{}\"", message_payload));    
+                return Err(format!("Invalid count of version strings \"{}\"", message_payload));    
             }
 
             // if name contains ":" join these sub strings
@@ -43,12 +43,18 @@ impl VersionResponse {
                 name,
             })    
         }
-        Err(format!("Could not read version: {}", message))        
+        Err(format!("Could not read version \"{}\"", message))        
     }
 
     /// Indicates if message has required version outline
     pub fn is_response(message: &str) -> bool {
-        message.starts_with("[VER:") && message.ends_with("]")
+        message.starts_with(VERSION_PREFIX) && message.ends_with(VERSION_SUFFIX)
+    }
+
+    pub fn get_version_slice(message: &str) -> &str  {
+        let start = VERSION_PREFIX.len();
+        let end = message.len() - VERSION_SUFFIX.len();
+        return &message[start..end];
     }
     
     pub fn version(&self) -> &String {

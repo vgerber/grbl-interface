@@ -1,5 +1,8 @@
 use std::result::Result;
 
+const ECHO_PREFIX: &str = "[echo:";
+const ECHO_SUFFIX: &str = "]";
+
 /// Parses an echo response \[echo:<message>\].
 pub struct EchoResponse {
     echo: String,
@@ -23,8 +26,7 @@ impl EchoResponse {
         // and return the unwrapped value
         // "[echo:<value>]"
         if EchoResponse::is_response(message) {
-            let message_end = message.len()-1;
-            let message_payload = &message[6..message_end];
+            let message_payload = message.strip_prefix(ECHO_PREFIX).unwrap().strip_suffix(ECHO_SUFFIX).unwrap();
             return Ok(EchoResponse {
                 echo: String::from(message_payload)
             })    
@@ -35,7 +37,7 @@ impl EchoResponse {
 
     /// Indicates if message has required echo outline
     pub fn is_response(message: &str) -> bool {
-        message.starts_with("[echo:") && message.ends_with("]")
+        message.starts_with(ECHO_PREFIX) && message.ends_with(ECHO_SUFFIX)
     }
     
     pub fn echo(&self) -> &String {
