@@ -1,48 +1,48 @@
-mod general {
-    const STATUS_REPORT: &str = "?";
-    const CYCLE_START: &str = "~";
-    const FEED_HOLD: &str = "!";
-    const UNLOCK: &str = "$X";
-    const START_HOMING: &str = "$H";
-    const CHECK: &str = "$C";
+pub mod general {
+    pub const STATUS_REPORT: &str = "?";
+    pub const CYCLE_START: &str = "~";
+    pub const FEED_HOLD: &str = "!";
+    pub const UNLOCK: &str = "$X";
+    pub const START_HOMING: &str = "$H";
+    pub const CHECK: &str = "$C";
     
-    const GET_NGC_PARAMETERS: &str = "$#";
-    const GET_STARTUP_LINES: &str = "$N";    
+    pub const GET_NGC_PARAMETERS: &str = "$#";
+    pub const GET_STARTUP_LINES: &str = "$N";    
     
-    const GET_PROGRAM_DEMARCATION: &str = "%";
-    const NO_TOOL: &str = "None";    
+    pub const GET_PROGRAM_DEMARCATION: &str = "%";
+    pub const NO_TOOL: &str = "None";    
 }
 
-mod state {
-    const GET_PARSER_STATE: &str = "$G";
-    const GET_INFO: &str = "$I";
-    const GET_INFO_EXTENDED: &str = "$I+";
-    const GET_ALARM_CODES: &str = "$EA";
-    const GET_ERROR_CODES: &str = "$EE";
+pub mod state {
+    pub const GET_PARSER_STATE: &str = "$G";
+    pub const GET_INFO: &str = "$I";
+    pub const GET_INFO_EXTENDED: &str = "$I+";
+    pub const GET_ALARM_CODES: &str = "$EA";
+    pub const GET_ERROR_CODES: &str = "$EE";
 }
 
-mod settings {
-    const GET: &str = "$$";
-    const GET_ALL: &str = "$+";
-    const GET_DETAILS: &str = "$ES";
-    const GET_GROUPS: &str = "$EG";
+pub mod settings {
+    pub const GET: &str = "$$";
+    pub const GET_ALL: &str = "$+";
+    pub const GET_DETAILS: &str = "$ES";
+    pub const GET_GROUPS: &str = "$EG";
 }
 
-mod sdcard {
-    const MOUNT: &str = "FM";
-    const DIR: &str = "F";
-    const REWIND: &str = "FR";
-    const RUN: &str = "F=";
-    const UNLINK: &str = "FD=";
-    const DUMP: &str = "F<=";
+pub mod sdcard {
+    pub const MOUNT: &str = "FM";
+    pub const DIR: &str = "F";
+    pub const REWIND: &str = "FR";
+    pub const RUN: &str = "F=";
+    pub const UNLINK: &str = "FD=";
+    pub const DUMP: &str = "F<=";
 }
 
-mod format {
-    const METRIC: &str = "###0.000";
-    const IMPERIAL: &str = "##0.0000";
+pub mod format {
+    pub const METRIC: &str = "###0.000";
+    pub const IMPERIAL: &str = "##0.0000";
 }
 
-mod signals {
-    const BASE: &str = "XYZABCEPRDHSBTOW";
-    const THC: &str = "AERTOVHDU";
+pub mod signals {
+    pub const BASE: &str = "XYZABCEPRDHSBTOW";
+    pub const THC: &str = "AERTOVHDU";
 }

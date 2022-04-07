@@ -5,8 +5,9 @@ const TOOL_LENGTH_REFERENCE_PREFIX: &str = "TLR:";
 /// 
 /// # Examples
 /// ```
+/// use grbli::device::state::tool::parse_tool_length_reference;
 /// let tlr_offset_set = parse_tool_length_reference("TLR:1");
-/// assert!(tlr_offset_set)
+/// assert!(tlr_offset_set.unwrap())
 /// ```
 pub fn parse_tool_length_reference(message: &str) -> Result<bool, String> {
     if is_tool_length_reference(message) {
