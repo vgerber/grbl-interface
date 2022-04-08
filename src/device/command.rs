@@ -1,4 +1,6 @@
 pub mod general {
+    pub const SYNC: &str = "\0";
+
     pub const STATUS_REPORT: &str = "?";
     pub const CYCLE_START: &str = "~";
     pub const FEED_HOLD: &str = "!";

@@ -2,6 +2,8 @@ use std::{time::{Duration, Instant}, thread::{self, JoinHandle}, sync::{mpsc::{s
 
 use serialport::{SerialPortInfo, SerialPort, SerialPortType};
 
+use crate::device::command::general::SYNC;
+
 use super::Endpoint;
 
 /// Endpoint for serial connections
@@ -114,6 +116,7 @@ impl SerialEndpoint {
                 return;
             }
 
+            // buffer for uncomplete messages read from device
             let mut message_buffer = String::from("");
 
             loop {
@@ -187,6 +190,13 @@ impl SerialEndpoint {
             Ok(false)
         }    
     }
+
+    /// Writes a sync command
+    /// 
+    /// Is required for issuing simulator commands
+    pub fn write_sync(&mut self) -> Result<(), String> {
+        self.write(format!("{}\n", SYNC).as_str())
+    }
 }
 
 impl Endpoint for SerialEndpoint {
@@ -198,7 +208,7 @@ impl Endpoint for SerialEndpoint {
                 Err(_) => Err(String::from(format!("Unabel to send \"{}\" to {}", message, self.port_name))),
             }
         } else {
-            panic!("Serial connection is not open!");
+            return Err("Serial connection is not open!".to_string());
         }
     }
 
@@ -206,7 +216,7 @@ impl Endpoint for SerialEndpoint {
     fn open(&mut self) -> Result<(), String> {
         // prevent opening a connection multiple times
         if let Some(_) = self.serial_thread {
-            panic!("Serial device is already listenting!");
+            return Err("Serial device is already listenting!".to_string());
         }
 
         self.open_serial_port();
