@@ -1,4 +1,4 @@
-use grbli::device::{response::report::ReportResponse, state::{machine::state::MachineStateName, signal::MachineSignal, accessory::AccessoryState, pendant::PendantControl, modes::ArcMode}, axis::Axis};
+use grbli::device::{response::{report::MachineInfo, state::{machine::state::MachineStateName, signal::MachineSignal, accessory::AccessoryState, pendant::PendantControl, modes::ArcMode}}, util::axis::Axis};
 
 
 
@@ -6,7 +6,7 @@ use grbli::device::{response::report::ReportResponse, state::{machine::state::Ma
 pub fn from_parses_all_attributes_correctly() {
     // test report with all possible fields set
     let message = "<Idle:2|WPos:3.32,67|Bf:100,10|Ln:9|FS:100,23,20|PN:DRH|WCO:23.2,0|WCS:G55|Ov:10,12,115|A:TF|MPG:0|H:1,7|D:1|Sc:XYZABC|TLR:0|FW:test|In:-1>";
-    let report = ReportResponse::from(message).unwrap();
+    let report = MachineInfo::from(message).unwrap();
 
     let machine_state = report.machine_state();
     assert!(matches!(machine_state.status(), MachineStateName::Idle));
@@ -45,7 +45,7 @@ pub fn from_parses_all_attributes_correctly() {
     assert_eq!(115, overrides.spindle_speed_percentage());
 
     let accessories = report.accessory_state().unwrap();
-    assert!(matches!(accessories[0], grbli::device::state::accessory::AccessoryState::ToolChangePending));
+    assert!(matches!(accessories[0], AccessoryState::ToolChangePending));
     assert!(matches!(accessories[1], AccessoryState::FloodCoolantEnabled));
 
     assert!(matches!(report.pendant_control().unwrap(), PendantControl::Released));

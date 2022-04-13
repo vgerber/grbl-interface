@@ -8,3 +8,4 @@ authors = ["vgerber"]
 
 [dependencies]
 serialport = "4.0.1"
+log = "0.4.16"
