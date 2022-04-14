@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::{Arc, Mutex, mpsc::{Sender, self, Receiver}}, thread::{JoinHandle, self}, time::Duration};
 
-use log::error;
+use log::{error, debug};
 
 use crate::{device::{DeviceInfo, response::read_response}, endpoint::{serial::SerialEndpoint, Endpoint}};
 
@@ -67,7 +67,7 @@ impl DeviceHandle {
                 if !new_messages.is_empty() {
                     let mut current_device_info = device_info.lock().unwrap();
                     for message in new_messages {
-                        if let Err(err) = read_response(message, &mut current_device_info) {
+                        if let Err(err) = read_response(&message, &mut current_device_info) {
                             error!("{}: {}", device_description.0, err)
                         }
                     }
@@ -75,7 +75,7 @@ impl DeviceHandle {
                 
                 // read the next command and write it to the device endpoint 
                 if let Ok(msg) = rx_write.recv_timeout(Duration::from_millis(1)) {
-                    println!("Write: {}", &msg);
+                    debug!("Write: {}", &msg);
                     if let Err(err) = endpoint.write(msg.as_str()) {
                         error!("{}: {}", device_description.0, err)
                     }

@@ -1,3 +1,5 @@
+use log::debug;
+
 use crate::device::response::{report::MachineInfo, firmware::{version::FirmwareVersion, startup::FirmwareStartupResult, compile_option::{CompileOptions, is_extended_compile_options, parse_extended_compile_options}}, util::{message::Message, echo::EchoMessage}, state::gcode_state::GCodeState};
 
 use self::setting::{DeviceSetting, group::DeviceSettingGroup, description::DeviceSettingDescription};
@@ -11,7 +13,7 @@ pub mod state;
 
 
 pub fn read_response(response: &str, device_info: &mut DeviceInfo) -> Result<(), String> {
-    println!("Parse resonse: {}", response);
+    debug!("Parse response: {}", response);
     if MachineInfo::is_response(response) {
         match MachineInfo::from(response) {
             Ok(info) => { 
@@ -127,7 +129,7 @@ fn read_firmware_info_response(response: &str, device_info: &mut DeviceInfo) -> 
     } else if FirmwareStartupResult::is_response(response) {
         match FirmwareStartupResult::from(response) {
             Ok(value) => { 
-                device_info.firmware_info().set_startup_result(Some(value));
+                device_info.firmware_info_mut().set_startup_result(Some(value));
                 Ok(true)
             }
             Err(err) => Err(err)
