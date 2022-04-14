@@ -60,22 +60,15 @@ pub fn read_response(response: &str, device_info: &mut DeviceInfo) -> Result<(),
             Err(err) => Err(err),
         }
     } else if is_setting_response(response) {
-        match read_setting_response(response, device_info) {
-            Ok(false) => panic!("Could not find setting parser: \"{}\"", response),
-            Ok(true) => Ok(()),
-            Err(err) => Err(err),
-        }
+        read_setting_response(response, device_info)
     } else if is_firmware_info_response(response) {
-        match read_firmware_info_response(response, device_info) {
-            Ok(false) => panic!("Could not find firmware info parser: \"{}\"", response),
-            Ok(true) => Ok(()),
-            Err(err) => Err(err),
-        }
+        read_firmware_info_response(response, device_info)
     } else {
         Err(format!("Unknown response format: \"{}\"", response))
     }
 }
 
+/// Indicates if message can be parsed by firmware info parsers
 fn is_firmware_info_response(response: &str) -> bool {
     FirmwareVersion::is_response(response)
         || FirmwareStartupResult::is_response(response)
@@ -83,6 +76,7 @@ fn is_firmware_info_response(response: &str) -> bool {
         || is_extended_compile_options(response)
 }
 
+// Indicates if message can be arsed by settings parsers
 fn is_setting_response(response: &str) -> bool {
     DeviceSetting::is_response(response)
         || DeviceSettingGroup::is_response(response)
@@ -91,18 +85,14 @@ fn is_setting_response(response: &str) -> bool {
 
 /// Checks if message is a setting message and parses and stores its content
 ///
-/// # Returns
-/// - True if parsing was successful
-/// - False if response did not match any setting format
-///
 /// # Error
 /// Returns an error when parsing fails
-fn read_setting_response(response: &str, device_info: &mut DeviceInfo) -> Result<bool, String> {
+fn read_setting_response(response: &str, device_info: &mut DeviceInfo) -> Result<(), String> {
     if DeviceSetting::is_response(response) {
         match DeviceSetting::from(response) {
             Ok(setting) => {
                 device_info.settings_mut().put_setting(setting);
-                return Ok(true);
+                Ok(())
             }
             Err(err) => return Err(err),
         }
@@ -110,7 +100,7 @@ fn read_setting_response(response: &str, device_info: &mut DeviceInfo) -> Result
         match DeviceSettingGroup::from(response) {
             Ok(group) => {
                 device_info.settings_mut().put_setting_group(group);
-                return Ok(true);
+                Ok(())
             }
             Err(err) => return Err(err),
         }
@@ -120,32 +110,28 @@ fn read_setting_response(response: &str, device_info: &mut DeviceInfo) -> Result
                 device_info
                     .settings_mut()
                     .put_setting_description(description);
-                return Ok(true);
+                Ok(())
             }
             Err(err) => return Err(err),
         }
+    } else {
+        Err(format!("Cannot find parsers for settings message: \"{}\"", response))
     }
-
-    return Ok(false);
 }
 
-/// Checks if message is a firmware info message and parses and stores its content
-///
-/// # Returns
-/// - True if parsing was successful
-/// - False if response did not match any firmware info format
-///
+/// Parses and stores settings updates
+/// 
 /// # Error
 /// Returns an error when parsing fails
 fn read_firmware_info_response(
     response: &str,
     device_info: &mut DeviceInfo,
-) -> Result<bool, String> {
+) -> Result<(), String> {
     if FirmwareVersion::is_response(response) {
         match FirmwareVersion::from(response) {
             Ok(value) => {
                 device_info.firmware_info_mut().set_version(Some(value));
-                Ok(true)
+                Ok(())
             }
             Err(err) => Err(err),
         }
@@ -155,7 +141,7 @@ fn read_firmware_info_response(
                 device_info
                     .firmware_info_mut()
                     .set_startup_result(Some(value));
-                Ok(true)
+                Ok(())
             }
             Err(err) => Err(err),
         }
@@ -165,7 +151,7 @@ fn read_firmware_info_response(
                 device_info
                     .firmware_info_mut()
                     .set_compile_options(Some(value));
-                Ok(true)
+                Ok(())
             }
             Err(err) => Err(err),
         }
@@ -175,11 +161,11 @@ fn read_firmware_info_response(
                 device_info
                     .firmware_info_mut()
                     .set_extended_compile_options(Some(value));
-                Ok(true)
+                Ok(())
             }
             Err(err) => Err(err),
         }
     } else {
-        Ok(false)
+        Err(format!("Cannot find parsers for firmware message: \"{}\"", response))
     }
 }
