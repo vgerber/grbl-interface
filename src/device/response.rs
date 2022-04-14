@@ -20,38 +20,6 @@ pub fn read_response(response: &str, device_info: &mut DeviceInfo) -> Result<(),
             }
             Err(err) => Err(err)
         }
-    } else if FirmwareVersion::is_response(response) {
-        match FirmwareVersion::from(response) {
-            Ok(value) => { 
-                device_info.set_version(value);
-                Ok(())
-            }
-            Err(err) => Err(err)
-        }
-    } else if FirmwareStartupResult::is_response(response) {
-        match FirmwareStartupResult::from(response) {
-            Ok(value) => { 
-                device_info.set_startup_result(value);
-                Ok(())
-            }
-            Err(err) => Err(err)
-        }
-    } else if CompileOptions::is_response(response) {
-        match CompileOptions::from(response) {
-            Ok(value) => { 
-                device_info.set_compile_options(value);
-                Ok(())
-            }
-            Err(err) => Err(err)
-        }
-    } else if is_extended_compile_options(response) {
-        match parse_extended_compile_options(response) {
-            Ok(value) => { 
-                device_info.set_extended_compile_options(value);
-                Ok(())
-            }
-            Err(err) => Err(err)
-        }
     } else if GCodeState::is_response(response) {
         match GCodeState::from(response) {
             Ok(value) => { 
@@ -78,17 +46,26 @@ pub fn read_response(response: &str, device_info: &mut DeviceInfo) -> Result<(),
         }
     } else if is_setting_response(response) {
         match read_setting_response(response, device_info) {
-            Ok(false) => panic!("Could not find setting parser"),
+            Ok(false) => panic!("Could not find setting parser: \"{}\"", response),
+            Ok(true) => Ok(()),
+            Err(err) => Err(err),            
+        }
+    } else if is_firmware_info_response(response) {
+        match read_firmware_info_response(response, device_info) {
+            Ok(false) => panic!("Could not find firmware info parser: \"{}\"", response),
             Ok(true) => Ok(()),
             Err(err) => Err(err),            
         }
     } else {
-        Err(format!("Unknown response format: {}", response))
+        Err(format!("Unknown response format: \"{}\"", response))
     }    
 }
 
+fn is_firmware_info_response(response: &str) -> bool {
+    false
+}
 
-fn  is_setting_response(response: &str) -> bool {
+fn is_setting_response(response: &str) -> bool {
     DeviceSetting::is_response(response) || DeviceSettingGroup::is_response(response) || DeviceSettingDescription::is_response(response)
 }
 
@@ -128,4 +105,50 @@ fn read_setting_response(response: &str, device_info: &mut DeviceInfo) -> Result
     }
 
     return Ok(false);
+}
+
+/// Checks if message is a firmware info message and parses and stores its content
+/// 
+/// # Returns
+/// - True if parsing was successful
+/// - False if response did not match any firmware info format
+/// 
+/// # Error
+/// Returns an error when parsing fails
+fn read_firmware_info_response(response: &str, device_info: &mut DeviceInfo) -> Result<bool, String> {
+    if FirmwareVersion::is_response(response) {
+        match FirmwareVersion::from(response) {
+            Ok(value) => { 
+                device_info.firmware_info_mut().set_version(Some(value));
+                Ok(true)
+            }
+            Err(err) => Err(err)
+        }
+    } else if FirmwareStartupResult::is_response(response) {
+        match FirmwareStartupResult::from(response) {
+            Ok(value) => { 
+                device_info.firmware_info().set_startup_result(Some(value));
+                Ok(true)
+            }
+            Err(err) => Err(err)
+        }
+    } else if CompileOptions::is_response(response) {
+        match CompileOptions::from(response) {
+            Ok(value) => { 
+                device_info.firmware_info_mut().set_compile_options(Some(value));
+                Ok(true)
+            }
+            Err(err) => Err(err)
+        }
+    } else if is_extended_compile_options(response) {
+        match parse_extended_compile_options(response) {
+            Ok(value) => { 
+                device_info.firmware_info_mut().set_extended_compile_options(Some(value));
+                Ok(true)
+            }
+            Err(err) => Err(err)
+        }
+    } else {
+        Ok(false)
+    }    
 }

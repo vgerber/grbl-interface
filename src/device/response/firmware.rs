@@ -17,6 +17,10 @@ pub struct FirmwareInfo {
 
 impl FirmwareInfo {
 
+    /// Creates a new empty firmware info
+    pub fn new() -> Self {
+        FirmwareInfo { startup_result: None, version: None, compile_options: None, extended_compile_options: None }
+    }
 
     /// Creates the firmware info from given parameters
     ///
@@ -26,7 +30,7 @@ impl FirmwareInfo {
         version: Option<FirmwareVersion>,
         compile_options: Option<CompileOptions>,
         extended_compile_options: Option<Vec<ExtendedCompileOption>>,
-    ) -> Result<FirmwareInfo, String> {
+    ) -> Result<Self, String> {
         if startup_result.is_none()
             && version.is_none()
             && compile_options.is_none()

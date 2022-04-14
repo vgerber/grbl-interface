@@ -11,7 +11,7 @@ pub mod util;
 #[derive(Clone, Debug)]
 pub struct DeviceInfo {
     id: String,
-    firmware_info: Option<FirmwareInfo>,
+    firmware_info: FirmwareInfo,
     machine_info: Option<MachineInfo>,
     gcode_state: Option<GCodeState>,
     last_message: Option<Message>,
@@ -26,7 +26,7 @@ impl DeviceInfo {
     pub fn from(id: &str) -> Result<DeviceInfo, String> {
         Ok(DeviceInfo {
             id: id.to_string(),
-            firmware_info: None,
+            firmware_info: FirmwareInfo::new(),
             machine_info: None,
             gcode_state: None,
             last_message: None,
@@ -65,63 +65,13 @@ impl DeviceInfo {
 
     /// Get a reference to the device's firmware info.
     #[must_use]
-    pub fn firmware_info(&self) -> Option<&FirmwareInfo> {
-        self.firmware_info.as_ref()
+    pub fn firmware_info(&self) -> &FirmwareInfo {
+        &self.firmware_info
     }
 
-    /// Sets compile options active in the firmware
-    pub fn set_extended_compile_options(&mut self, compile_options: Vec<ExtendedCompileOption>) {
-        match self.firmware_info.as_mut() {
-            Some(fw) => fw.set_extended_compile_options(Some(compile_options)),
-            None => {
-                match FirmwareInfo::from(None, None, None, Some(compile_options)) {
-                    Ok(fw) => self.firmware_info = Some(fw),
-                    Err(err) => panic!("Setting compile options failed: {}", err)
-                }
-            }
-        }
-    }
-
-    /// Sets compile options active in the firmware
-    pub fn set_compile_options(&mut self, compile_options: CompileOptions) {
-        println!("Set compile options: {:#?}", compile_options);
-        match self.firmware_info.as_mut() {
-            Some(fw) => fw.set_compile_options(Some(compile_options)),
-            None => {
-                match FirmwareInfo::from(None, None, Some(compile_options), None) {
-                    Ok(fw) => self.firmware_info = Some(fw),
-                    Err(err) => panic!("Setting compile options failed: {}", err)
-                }
-            }
-        }
-    }
-
-    /// Sets the version of the firmware
-    pub fn set_version(&mut self, version: FirmwareVersion) {
-        match self.firmware_info.as_mut() {
-            Some(fw) => fw.set_version(Some(version)),
-            None => {
-                match FirmwareInfo::from(None, Some(version), None, None) {
-                    Ok(fw) => self.firmware_info = Some(fw),
-                    Err(err) => panic!("Setting firmware version failed: {}", err)
-                }
-            }
-        }
-    }
-
-    /// Sets the result of the startup process
-    /// 
-    /// This might be never set if the user attaches after the controller started
-    pub fn set_startup_result(&mut self, startup_result: FirmwareStartupResult) {
-        match self.firmware_info.as_mut() {
-            Some(fw) => fw.set_startup_result(Some(startup_result)),
-            None => {
-                match FirmwareInfo::from(Some(startup_result), None, None, None) {
-                    Ok(fw) => self.firmware_info = Some(fw),
-                    Err(err) => panic!("Setting firmware startup result failed: {}", err)
-                }
-            }
-        }
+    /// Get a mutable reference to the device's firmware info
+    pub fn firmware_info_mut(&mut self) -> &mut FirmwareInfo {
+        &mut self.firmware_info
     }
 
     /// Get a reference to the device's machine info.
