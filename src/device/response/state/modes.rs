@@ -1,6 +1,6 @@
 const ARC_MODE_PREFIX: &str = "D:";
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum ArcMode {
     Radius,
     Diameter,

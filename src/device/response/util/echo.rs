@@ -4,7 +4,7 @@ const ECHO_PREFIX: &str = "[echo:";
 const ECHO_SUFFIX: &str = "]";
 
 /// Parses an echo response \[echo:<message>\].
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct EchoMessage {
     echo: String,
 }

@@ -1,4 +1,6 @@
-use std::collections::HashMap;
+use std::{collections::HashMap};
+
+use self::{group::DeviceSettingGroup, description::DeviceSettingDescription};
 
 pub mod description;
 pub mod group;
@@ -12,9 +14,12 @@ pub struct DeviceSetting {
 }
 
 /// Stores all settings and meta data
+#[derive(Clone, Debug)]
 pub struct DeviceSettings {
     /// Stored settings
     settings: HashMap<u32, DeviceSetting>,
+    setting_groups: HashMap<u32, DeviceSettingGroup>,
+    setting_descriptions: HashMap<u32, DeviceSettingDescription>,
 }
 
 impl DeviceSetting {
@@ -85,22 +90,59 @@ impl DeviceSetting {
 }
 
 impl DeviceSettings {
-    pub fn new(&mut self) {
-        self.settings = HashMap::new();
+
+    pub fn new() -> Self {
+        DeviceSettings {
+            settings: HashMap::new(),
+            setting_descriptions: HashMap::new(),
+            setting_groups: HashMap::new(),
+        }
     }
 
     /// Stores the new setting and overrides the old value
     pub fn put_setting(&mut self, setting: DeviceSetting) {
-        self.settings.insert(setting.index().clone(), setting);
+        self.settings.insert(*setting.index(), setting);
     }
 
-    /// Get setting for specific setting if present
+    /// Stores the new setting and overrides the old value
+    pub fn put_setting_group(&mut self, group: DeviceSettingGroup) {
+        self.setting_groups.insert(*group.index(), group);
+    }
+
+    /// Stores the new setting and overrides the old value
+    pub fn put_setting_description(&mut self, description: DeviceSettingDescription) {
+        self.setting_descriptions.insert(*description.index(), description);
+    }
+
+    /// Get value for specific setting if present
     pub fn get_setting(&self, index: &u32) -> Option<&DeviceSetting> {
         self.settings.get(index)
     }
 
+    /// Get the group by index if present
+    pub fn get_setting_group(&self, index: &u32) -> Option<&DeviceSettingGroup> {
+        self.setting_groups.get(index)
+    }
+
+    /// Get teh description by index if present
+    pub fn get_setting_description(&self, index: &u32) -> Option<&DeviceSettingDescription> {
+        self.setting_descriptions.get(index)
+    }
+
     /// Get all stored settings
-    pub fn get_settings(&self) -> HashMap<u32, DeviceSetting> {
-        self.settings.clone()
+    pub fn get_settings(&self) -> &HashMap<u32, DeviceSetting> {
+        &self.settings
+    }
+
+    /// Get a reference to the device settings's setting groups.
+    #[must_use]
+    pub fn setting_groups(&self) -> &HashMap<u32, DeviceSettingGroup> {
+        &self.setting_groups
+    }
+
+    /// Get a reference to the device settings's setting descriptions.
+    #[must_use]
+    pub fn setting_descriptions(&self) -> &HashMap<u32, DeviceSettingDescription> {
+        &self.setting_descriptions
     }
 }

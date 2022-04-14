@@ -1,7 +1,7 @@
 
 const MACHINE_SPEED_PREFIX: &str = "FS:";
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct MachineSpeed {
     feed_rate: i32,
     spindle_programmed_rpm: i32,

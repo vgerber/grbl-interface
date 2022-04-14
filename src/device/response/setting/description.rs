@@ -3,6 +3,7 @@ const SETTING_DESC_SUFFIX: &str = "]";
 
 
 /// Description of a single setting entry
+#[derive(Clone, Debug)]
 pub struct DeviceSettingDescription {
     index: u32,
     group_index: u32,

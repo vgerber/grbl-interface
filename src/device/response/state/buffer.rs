@@ -1,7 +1,7 @@
 
 const BUFFER_STATE_PREFIX: &str = "Bf:";
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct BufferState {
     block_buffers_free: i32,
 

@@ -2,14 +2,14 @@ use std::result::Result;
 
 const STARTUP_PREFIX: &str = ">";
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum StartupResult {
     Ok,
     Error(i32)
 }
 
 /// Stores the reponse from the firmware startup process
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct FirmwareStartupResult {
     executed_line: String,
     result: StartupResult,

@@ -1,4 +1,4 @@
-use self::response::{firmware::{FirmwareInfo, compile_option::CompileOptions, version::FirmwareVersion, startup::FirmwareStartupResult}, report::MachineInfo, util::{message::Message, echo::EchoMessage}, state::{gcode_state::GCodeState, compile::ExtendedCompileOption}};
+use self::response::{firmware::{FirmwareInfo, compile_option::CompileOptions, version::FirmwareVersion, startup::FirmwareStartupResult}, report::MachineInfo, util::{message::Message, echo::EchoMessage}, state::{gcode_state::GCodeState, compile::ExtendedCompileOption}, setting::DeviceSettings};
 
 pub mod response;
 pub mod command;
@@ -8,14 +8,15 @@ pub mod util;
 /// The device object stores all gathered information from a grbl controller
 /// 
 /// Each response will update this information
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct DeviceInfo {
     id: String,
     firmware_info: Option<FirmwareInfo>,
     machine_info: Option<MachineInfo>,
     gcode_state: Option<GCodeState>,
     last_message: Option<Message>,
-    last_echo_message: Option<EchoMessage>
+    last_echo_message: Option<EchoMessage>,
+    settings: DeviceSettings,
 }
 
 
@@ -30,6 +31,7 @@ impl DeviceInfo {
             gcode_state: None,
             last_message: None,
             last_echo_message: None,
+            settings: DeviceSettings::new(),
         })
     }
 
@@ -232,6 +234,18 @@ impl DeviceInfo {
     pub fn set_gcode_state(&mut self, gcode_state: GCodeState) {
         self.gcode_state = Some(gcode_state);
     }  
+
+    /// Get a mutable reference to the device info's settings.
+    #[must_use]
+    pub fn settings_mut(&mut self) -> &mut DeviceSettings {
+        &mut self.settings
+    }
+
+    /// Get a reference to the device info's settings.
+    #[must_use]
+    pub fn settings(&self) -> &DeviceSettings {
+        &self.settings
+    }
 }
 
 unsafe impl Send for DeviceInfo {}

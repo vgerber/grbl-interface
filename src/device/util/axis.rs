@@ -6,7 +6,7 @@ pub const MAX_AXES: usize = 6;
 /// Minimum amount of axes, available in grbl
 pub const MIN_AXES: usize = 1;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Axis {
     X,
     Y,

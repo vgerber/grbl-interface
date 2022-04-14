@@ -1,7 +1,7 @@
 use std::result::Result;
 
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum MachineStateName {
     Idle,
     Run,
@@ -31,7 +31,7 @@ pub fn get_machine_status_name(name: &str) -> Result<MachineStateName, String> {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct MachineState {
     status: MachineStateName,
     sub_status: Option<i8>,

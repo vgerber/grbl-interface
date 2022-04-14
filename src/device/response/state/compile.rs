@@ -23,7 +23,7 @@ pub enum CompileOption {
     SoftwareDebounce
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum ExtendedCompileOption {
     AutomaticToolChange,
     BlockDeleteSignal,
