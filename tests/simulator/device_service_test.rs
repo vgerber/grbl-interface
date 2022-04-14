@@ -25,5 +25,5 @@ fn run_device_init() {
     thread::sleep(Duration::from_millis(100));
 
     let info =  service.get_device_info(&device_desc.0).unwrap();
-    println!("{:?}", info.firmware_info().unwrap().compile_options().unwrap().options())
+    println!("{:?}", info.firmware_info().compile_options().unwrap().options())
 }
