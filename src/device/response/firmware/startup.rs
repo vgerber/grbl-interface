@@ -19,8 +19,6 @@ impl FirmwareStartupResult {
 
     /// Reads startup line reponse and status
     /// 
-    /// Performs trimming before syntax checks
-    /// 
     /// # Examples
     /// Basic usage:
     /// ```
@@ -41,7 +39,7 @@ impl FirmwareStartupResult {
                 return Err(format!("Invalid count of startup segments \"{}\"", message_payload));    
             }
             
-            // reead <:code> value
+            // read <:code> value
             let mut result_code = -1;
             if segments.len() >= 3 {
                 result_code = match segments[2].parse() {

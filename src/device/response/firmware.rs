@@ -1,11 +1,12 @@
-use self::{startup::FirmwareStartupResult, version::FirmwareVersion, compile_option::CompileOptions};
+use self::{startup::FirmwareStartupResult, version::FirmwareVersion, compile_option::CompileOptions, driver::DriverInfo, board::BoardInfo};
 
 use super::state::compile::ExtendedCompileOption;
 
 pub mod compile_option;
 pub mod startup;
 pub mod version;
-
+pub mod board;
+pub mod driver;
 
 #[derive(Clone, Debug)]
 pub struct FirmwareInfo {
@@ -13,40 +14,17 @@ pub struct FirmwareInfo {
     version: Option<FirmwareVersion>,
     compile_options: Option<CompileOptions>,
     extended_compile_options: Option<Vec<ExtendedCompileOption>>,
+    driver_info: DriverInfo,
+    board_info: BoardInfo,
 }
 
 impl FirmwareInfo {
 
     /// Creates a new empty firmware info
     pub fn new() -> Self {
-        FirmwareInfo { startup_result: None, version: None, compile_options: None, extended_compile_options: None }
+        FirmwareInfo { startup_result: None, version: None, compile_options: None, extended_compile_options: None, driver_info: DriverInfo::new(), board_info: BoardInfo::new() }
     }
-
-    /// Creates the firmware info from given parameters
-    ///
-    /// At least one property is required
-    pub fn from(
-        startup_result: Option<FirmwareStartupResult>,
-        version: Option<FirmwareVersion>,
-        compile_options: Option<CompileOptions>,
-        extended_compile_options: Option<Vec<ExtendedCompileOption>>,
-    ) -> Result<Self, String> {
-        if startup_result.is_none()
-            && version.is_none()
-            && compile_options.is_none()
-            && extended_compile_options.is_none()
-        {
-            return Err("Cannot create firmware info from None's only".to_string());
-        }
-
-        Ok(FirmwareInfo {
-            startup_result,
-            version,
-            compile_options,
-            extended_compile_options,
-        })
-    }
-
+    
     /// Get a reference to the firmware info's startup state.
     #[must_use]
     pub fn startup_result(&self) -> Option<&FirmwareStartupResult> {
@@ -92,5 +70,29 @@ impl FirmwareInfo {
         extended_compile_options: Option<Vec<ExtendedCompileOption>>,
     ) {
         self.extended_compile_options = extended_compile_options;
+    }
+
+    /// Get a reference to the firmware info's driver info.
+    #[must_use]
+    pub fn driver_info(&self) -> &DriverInfo {
+        &self.driver_info
+    }
+
+    /// Get a reference to the firmware info's board info.
+    #[must_use]
+    pub fn board_info(&self) -> &BoardInfo {
+        &self.board_info
+    }
+
+    /// Get a mutable reference to the firmware info's driver info.
+    #[must_use]
+    pub fn driver_info_mut(&mut self) -> &mut DriverInfo {
+        &mut self.driver_info
+    }
+
+    /// Get a mutable reference to the firmware info's board info.
+    #[must_use]
+    pub fn board_info_mut(&mut self) -> &mut BoardInfo {
+        &mut self.board_info
     }
 }
