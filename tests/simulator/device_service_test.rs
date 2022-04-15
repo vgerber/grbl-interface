@@ -1,6 +1,6 @@
 use std::{thread, time::Duration};
 
-use grbli::{service::device_service::{DeviceService, DeviceEndpointType}, device::command::{state::*, general::SYNC, settings}};
+use grbli::{service::device_service::{DeviceService, DeviceEndpointType}, device::command::{state::{*, self}, general::{SYNC, self}, settings}};
 
 
 
@@ -19,7 +19,7 @@ fn run_device_init() {
     let device_desc = ("/dev/ttyACM0".to_string(), DeviceEndpointType::Serial);
 
     service.open_device(&device_desc).unwrap();
-    service.write_device_command(&device_desc.0, format!("{}\n", GET_INFO_EXTENDED).as_str()).unwrap();
+    service.write_device_command(&device_desc.0, format!("{}\n", state::GET_INFO_EXTENDED).as_str()).unwrap();
     service.write_device_command(&device_desc.0, format!("{}\n", settings::GET_ALL).as_str()).unwrap();
     service.write_device_command(&device_desc.0, format!("{}\n", settings::GET_DETAILS).as_str()).unwrap();
     service.write_device_command(&device_desc.0, format!("{}\n", settings::GET_GROUPS).as_str()).unwrap();
