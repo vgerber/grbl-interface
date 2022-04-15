@@ -1,2 +1,4 @@
 /target
 Cargo.lock
+tests/endpoint/serial_test.rs
+.vscode
