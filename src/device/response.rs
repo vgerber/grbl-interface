@@ -14,7 +14,7 @@ use crate::device::response::{
 };
 
 use self::{
-    setting::{description::DeviceSettingDescription, group::DeviceSettingGroup, DeviceSetting}, firmware::{driver::{name::{is_driver_name_response, parse_driver_name}, option::{is_driver_options_response, parse_driver_options}, version::{is_driver_version_response, parse_driver_version}, DriverInfo}, board::{name::{is_board_name_response, parse_board_name}, aux::AuxPorts, storage::Storage}},
+    setting::{description::DeviceSettingDescription, group::DeviceSettingGroup, DeviceSetting}, firmware::{driver::{name::{is_driver_name_response, parse_driver_name}, option::{is_driver_options_response, parse_driver_options}, version::{is_driver_version_response, parse_driver_version}}, board::{name::{is_board_name_response, parse_board_name}, aux::AuxPorts, storage::Storage}},
 };
 
 use super::DeviceInfo;

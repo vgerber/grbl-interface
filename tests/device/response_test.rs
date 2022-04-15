@@ -1,4 +1,4 @@
-use grbli::device::{response::{firmware::driver::DriverInfo, read_response}, DeviceInfo};
+use grbli::device::{response::{read_response}, DeviceInfo};
 
 
 

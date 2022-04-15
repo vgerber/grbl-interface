@@ -1,8 +1,6 @@
 use std::{thread, time::Duration};
 
-use grbli::{service::device_service::{DeviceService, DeviceEndpointType}, device::command::{state::*, general::SYNC, settings::{GET, self}}};
-
-use crate::device::response::setting;
+use grbli::{service::device_service::{DeviceService, DeviceEndpointType}, device::command::{state::*, general::SYNC, settings}};
 
 
 

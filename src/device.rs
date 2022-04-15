@@ -1,4 +1,4 @@
-use self::response::{firmware::{FirmwareInfo, compile_option::CompileOptions, version::FirmwareVersion, startup::FirmwareStartupResult}, report::MachineInfo, util::{message::Message, echo::EchoMessage}, state::{gcode_state::GCodeState, compile::ExtendedCompileOption}, setting::DeviceSettings};
+use self::response::{firmware::{FirmwareInfo}, report::MachineInfo, util::{message::Message, echo::EchoMessage}, state::{gcode_state::GCodeState}, setting::DeviceSettings};
 
 pub mod response;
 pub mod command;
