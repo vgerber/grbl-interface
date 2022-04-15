@@ -1,6 +1,6 @@
-use self::{storage::Storage, aux::AuxPorts};
+use self::{storage::Storage, ports::AuxPorts};
 
-pub mod aux;
+pub mod ports;
 pub mod name;
 pub mod storage;
 
