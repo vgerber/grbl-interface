@@ -1,8 +1,10 @@
+use std::fmt;
+
 const SETTING_GROUP_PREFIX: &str = "[SETTINGGROUP:";
 const SETTING_GROUP_SUFFIX: &str = "]";
 
 /// Group information for multiple setting entries
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct DeviceSettingGroup {
     index: u32,
     parent_group_index: u32,
@@ -84,5 +86,12 @@ impl DeviceSettingGroup {
     /// Get the group name
     pub fn name(&self) -> &String {
         &self.name
+    }
+}
+
+impl fmt::Debug for DeviceSettingGroup {
+
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct(format!("DeviceSettingGroup [{},{},{}]", self.index(), self.parent_group_index(), self.name()).as_str()).finish()
     }
 }

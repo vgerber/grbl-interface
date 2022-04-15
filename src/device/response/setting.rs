@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::{collections::HashMap, fmt};
 
 use self::{group::DeviceSettingGroup, description::DeviceSettingDescription};
 
@@ -7,7 +7,7 @@ pub mod group;
 
 const SETTINGS_PREFIX: &str = "$";
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct DeviceSetting {
     index: u32,
     value: String,
@@ -86,6 +86,12 @@ impl DeviceSetting {
     /// Get the setting value
     pub fn value(&self) -> &String {
         &self.value
+    }
+}
+
+impl fmt::Debug for DeviceSetting {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct(format!("DeviceSetting [{},{}]", self.index, self.value).as_str()).finish()
     }
 }
 

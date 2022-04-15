@@ -1,9 +1,11 @@
+use std::fmt;
+
 const SETTING_DESC_PREFIX: &str = "[SETTING:";
 const SETTING_DESC_SUFFIX: &str = "]";
 
 
 /// Description of a single setting entry
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct DeviceSettingDescription {
     index: u32,
     group_index: u32,
@@ -189,4 +191,30 @@ impl DeviceSettingDescription {
     pub fn value_max(&self) -> Option<&String> {
         self.value_max.as_ref()
     }
+
+    fn convert_optional_field(value: Option<String>) -> String {
+        match value {
+            Some(x) => x,
+            _ => "-".to_string()
+        }
+    } 
+}
+
+impl fmt::Debug for DeviceSettingDescription {
+
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut fields: Vec<String> = Vec::new();
+        fields.push(self.index.to_string());
+        fields.push(self.group_index.to_string());
+        fields.push(DeviceSettingDescription::convert_optional_field(self.description.clone()));
+        fields.push(DeviceSettingDescription::convert_optional_field(self.unit.clone()));
+        fields.push(self.value_type.to_string());
+        fields.push(DeviceSettingDescription::convert_optional_field(self.value_format.clone()));
+        fields.push(DeviceSettingDescription::convert_optional_field(self.value_min.clone()));
+        fields.push(DeviceSettingDescription::convert_optional_field(self.value_max.clone()));        
+
+        f.debug_struct(format!("DeviceSettingDescription [{}]", fields.join(",")).as_str()).finish()
+    }
+
+    
 }
