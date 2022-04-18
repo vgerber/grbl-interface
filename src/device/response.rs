@@ -14,7 +14,7 @@ use crate::device::response::{
 };
 
 use self::{
-    setting::{description::DeviceSettingDescription, group::DeviceSettingGroup, DeviceSetting}, firmware::{driver::{name::{is_driver_name_response, parse_driver_name}, option::{is_driver_options_response, parse_driver_options}, version::{is_driver_version_response, parse_driver_version}}, board::{name::{is_board_name_response, parse_board_name}, ports::AuxPorts, storage::Storage}},
+    setting::{description::DeviceSettingDescription, group::DeviceSettingGroup, DeviceSetting}, firmware::{driver::{name::{is_driver_name_response, parse_driver_name}, option::{is_driver_options_response, parse_driver_options}, version::{is_driver_version_response, parse_driver_version}}, board::{name::{is_board_name_response, parse_board_name}, ports::AuxPorts, storage::Storage}}, error::{AlarmCode, ErrorCode},
 };
 
 use super::DeviceInfo;
@@ -24,7 +24,7 @@ pub mod setting;
 pub mod state;
 pub mod util;
 pub mod parser;
-
+pub mod error;
 
 /// Reads any response and updates the device info accordingly
 pub fn read_response(response: &str, device_info: &mut DeviceInfo) -> Result<(), String> {
@@ -65,9 +65,16 @@ pub fn read_response(response: &str, device_info: &mut DeviceInfo) -> Result<(),
         read_setting_response(response, device_info)
     } else if is_firmware_info_response(response) {
         read_firmware_info_response(response, device_info)
+    } else if is_status_code_response(response) {
+        read_status_code_response(response, device_info)
     } else {
         Err(format!("Unknown response format: \"{}\"", response))
     }
+}
+
+/// Indicates if message can be parsed by status code parsers
+fn is_status_code_response(response: &str) -> bool {
+    AlarmCode::is_response(response) || ErrorCode::is_response(response)
 }
 
 /// Indicates if message can be parsed by firmware info parsers
@@ -80,16 +87,42 @@ fn is_firmware_info_response(response: &str) -> bool {
         || is_firmware_driver_response(response)
 }
 
-// Indicates if message can be arsed by settings parsers
+/// Indicates if message can be arsed by settings parsers
 fn is_setting_response(response: &str) -> bool {
     DeviceSetting::is_response(response)
         || DeviceSettingGroup::is_response(response)
         || DeviceSettingDescription::is_response(response)
 }
 
+/// Checks if message is a status code message and parses and stores its content
+///
+/// # Errors
+/// Returns an error when parsing fails
+fn read_status_code_response(response: &str, device_info: &mut DeviceInfo) -> Result<(), String> {
+    if AlarmCode::is_response(response) {
+        match AlarmCode::from(response) {
+            Ok(alarm_code) => {
+                device_info.status_codes_mut().put_alarm_code(alarm_code);
+                Ok(())
+            }
+            Err(err) => return Err(err),
+        }
+    } else if ErrorCode::is_response(response) {
+        match ErrorCode::from(response) {
+            Ok(error_code) => {
+                device_info.status_codes_mut().put_error_code(error_code);
+                Ok(())
+            }
+            Err(err) => return Err(err),
+        }
+    } else {
+        Err(format!("Cannot find parsers for status code message: \"{}\"", response))
+    }
+}
+
 /// Checks if message is a setting message and parses and stores its content
 ///
-/// # Error
+/// # Errors
 /// Returns an error when parsing fails
 fn read_setting_response(response: &str, device_info: &mut DeviceInfo) -> Result<(), String> {
     if DeviceSetting::is_response(response) {

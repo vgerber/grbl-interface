@@ -1,4 +1,4 @@
-use self::response::{firmware::{FirmwareInfo}, report::MachineInfo, util::{message::Message, echo::EchoMessage}, state::{gcode_state::GCodeState}, setting::DeviceSettings};
+use self::response::{firmware::{FirmwareInfo}, report::MachineInfo, util::{message::Message, echo::EchoMessage}, state::{gcode_state::GCodeState}, setting::DeviceSettings, error::StatusCodes};
 
 pub mod response;
 pub mod command;
@@ -17,12 +17,14 @@ pub struct DeviceInfo {
     last_message: Option<Message>,
     last_echo_message: Option<EchoMessage>,
     settings: DeviceSettings,
+    status_codes: StatusCodes,
 }
 
 
 
 impl DeviceInfo {
 
+    /// Creates a new empty device info from the connection id
     pub fn from(id: &str) -> Result<DeviceInfo, String> {
         Ok(DeviceInfo {
             id: id.to_string(),
@@ -32,6 +34,7 @@ impl DeviceInfo {
             last_message: None,
             last_echo_message: None,
             settings: DeviceSettings::new(),
+            status_codes: StatusCodes::new(),
         })
     }
 
@@ -195,6 +198,18 @@ impl DeviceInfo {
     #[must_use]
     pub fn settings(&self) -> &DeviceSettings {
         &self.settings
+    }
+
+    /// Get a reference to the device info's status codes.
+    #[must_use]
+    pub fn status_codes(&self) -> &StatusCodes {
+        &self.status_codes
+    }
+
+    /// Get a mutable reference to the device info's status codes.
+    #[must_use]
+    pub fn status_codes_mut(&mut self) -> &mut StatusCodes {
+        &mut self.status_codes
     }
 }
 
