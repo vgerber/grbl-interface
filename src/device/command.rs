@@ -1,3 +1,5 @@
+pub mod util;
+
 pub mod general {
     pub const SYNC: &str = "\0\n";
 

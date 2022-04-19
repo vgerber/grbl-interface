@@ -186,6 +186,15 @@ impl DeviceService {
             None => Err("Device not found".to_string()),
         }        
     }
+
+    pub fn write_device_commands(&mut self, device_id : &String, commands: Vec<String>) -> Result<(), String> {
+        for command in commands {
+            if let Err(err) = self.write_device_command(device_id, &command) {
+                return Err(err)
+            }
+        }
+        Ok(())
+    }
 }
 
 impl Drop for DeviceService {
