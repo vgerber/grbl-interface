@@ -4,7 +4,7 @@ const SETTING_GROUP_PREFIX: &str = "[SETTINGGROUP:";
 const SETTING_GROUP_SUFFIX: &str = "]";
 
 /// Group information for multiple setting entries
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct DeviceSettingGroup {
     index: u32,
     parent_group_index: u32,

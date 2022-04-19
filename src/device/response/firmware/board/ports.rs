@@ -3,7 +3,7 @@ const AUX_PREFIX: &str = "[AUX IO:";
 const AUX_SUFFIX: &str = "]";
 
 /// Available auxillary ports
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct AuxPorts {
     digital_in: u16,
     digital_out: u16,

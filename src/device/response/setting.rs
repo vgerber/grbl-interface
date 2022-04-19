@@ -7,14 +7,14 @@ pub mod group;
 
 const SETTINGS_PREFIX: &str = "$";
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct DeviceSetting {
     index: u32,
     value: String,
 }
 
 /// Stores all settings and meta data
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DeviceSettings {
     /// Stored settings
     settings: HashMap<u32, DeviceSetting>,

@@ -12,7 +12,7 @@ const EXTENDED_COMPILE_OPTION_PREFIX: &str = "[NEWOPT:";
 
 
 /// Stores values from parsed help message "[OPT: ...]"
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct CompileOptions {
     options: Vec<CompileOption>,
     unknown_options: Vec<String>,

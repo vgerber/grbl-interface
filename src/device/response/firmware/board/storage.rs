@@ -3,7 +3,7 @@ const STORAGE_PREFIX: &str = "[NVS STORAGE:";
 const STORAGE_SUFFIX: &str = "]";
 const EMULATED_SYMBOL: &str = "*";
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StorageType {
     Flash,
     FRAM,
@@ -20,7 +20,7 @@ pub fn parse_storage_type(storage_type: &str) -> Result<StorageType, String> {
 }
 
 /// On board storage
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Storage {
     /// Indicates if the storage type is emulated
     emulated: bool,

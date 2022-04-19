@@ -8,7 +8,7 @@ const REPORT_PREFIX: &str = "<";
 const REPORT_SUFFIX: &str = ">";
 
 /// Reponse for report message
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct MachineInfo {
     /// <Status>[:Sub Status]
     machine_state: MachineState,

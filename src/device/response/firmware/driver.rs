@@ -2,7 +2,7 @@ pub mod name;
 pub mod option;
 pub mod version;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DriverInfo {
     name: Option<String>,
     version: Option<String>,

@@ -2,7 +2,7 @@
 
 const ACESSORY_STATE_PREFIX: &str = "A:";
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AccessoryState {
     SpindleClockwise,
     SpindleCounterClockwise,

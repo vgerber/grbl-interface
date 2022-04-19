@@ -6,7 +6,7 @@ const ALARM_CODE_PREFIX: &str = "[ALARMCODE:";
 const ALARM_CODE_SUFFIX: &str = "]";
 const STATUS_CODE_DELIMETER: &str = "|";
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct StatusCodes {
     error_codes: HashMap<u16, ErrorCode>,
     alarm_codes: HashMap<u16, AlarmCode>,

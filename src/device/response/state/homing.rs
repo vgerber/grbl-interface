@@ -2,7 +2,7 @@ use crate::device::util::axis::{Axis, get_axes_from_mask, get_all_grbl_axes};
 
 const HOMING_STATE_PREFIX: &str = "H:";
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HomingState {
     /// True if homed_axes are homed
     homed: bool,

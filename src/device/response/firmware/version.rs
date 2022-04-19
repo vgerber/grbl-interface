@@ -4,7 +4,7 @@ const VERSION_PREFIX: &str = "[VER:";
 const VERSION_SUFFIX: &str = "]";
 
 /// Stores the version of the device firmware
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct FirmwareVersion {
     version: String,
     name: String,

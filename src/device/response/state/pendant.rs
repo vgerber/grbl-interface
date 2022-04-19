@@ -1,6 +1,6 @@
 const PENDANT_CONTROL_PREFIX: &str = "MPG:";
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PendantControl {
     Released,
     Taken,

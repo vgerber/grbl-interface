@@ -8,7 +8,7 @@ pub mod version;
 pub mod board;
 pub mod driver;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct FirmwareInfo {
     startup_result: Option<FirmwareStartupResult>,
     version: Option<FirmwareVersion>,

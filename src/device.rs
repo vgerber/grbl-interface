@@ -8,7 +8,7 @@ pub mod util;
 /// The device object stores all gathered information from a grbl controller
 /// 
 /// Each response will update this information
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct DeviceInfo {
     id: String,
     firmware_info: FirmwareInfo,

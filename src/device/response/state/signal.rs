@@ -1,7 +1,7 @@
 
 const MACHINE_SIGNALE_PREFIX: &str = "PN:";
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MachineSignal {
     ProbeTriggered,
     ProbeDisconnected,

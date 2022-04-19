@@ -4,7 +4,7 @@ pub mod ports;
 pub mod name;
 pub mod storage;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct BoardInfo {
     name: Option<String>,
     storage: Option<Storage>,

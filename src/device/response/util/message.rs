@@ -3,7 +3,7 @@ use std::result::Result;
 const MESSAGE_PREFIX: &str = "[MSG:";
 const MESSAGE_SUFFIX: &str = "]";
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Message {
     message: String,
 }

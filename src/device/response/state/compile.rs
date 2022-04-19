@@ -1,7 +1,7 @@
 use std::result::Result;
 
 // All available compile options for grbl 1.1 firmware
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CompileOption {
     VariableSpindleEnabled,
     LineNumbersEnabled,
@@ -23,7 +23,7 @@ pub enum CompileOption {
     SoftwareDebounce
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ExtendedCompileOption {
     AutomaticToolChange,
     BlockDeleteSignal,

@@ -1,7 +1,7 @@
 
 const OVERRIDE_VALUES_PREFIX: &str = "Ov:";
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Overrides {
     feed_rate_percentage: i32,
     rapids_percentage: i32,

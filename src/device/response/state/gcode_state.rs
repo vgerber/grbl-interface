@@ -3,7 +3,7 @@ use std::result::Result;
 const GCODE_PREFIX: &str = "[GC:";
 const GCODE_SUFFIX: &str = "]";
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct GCodeState {
     values: Vec<String>
 }
