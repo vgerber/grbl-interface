@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt};
+use std::{collections::BTreeMap, fmt};
 
 use self::{group::DeviceSettingGroup, description::DeviceSettingDescription};
 
@@ -17,9 +17,9 @@ pub struct DeviceSetting {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DeviceSettings {
     /// Stored settings
-    settings: HashMap<u32, DeviceSetting>,
-    setting_groups: HashMap<u32, DeviceSettingGroup>,
-    setting_descriptions: HashMap<u32, DeviceSettingDescription>,
+    settings: BTreeMap<u32, DeviceSetting>,
+    setting_groups: BTreeMap<u32, DeviceSettingGroup>,
+    setting_descriptions: BTreeMap<u32, DeviceSettingDescription>,
 }
 
 impl DeviceSetting {
@@ -99,9 +99,9 @@ impl DeviceSettings {
 
     pub fn new() -> Self {
         DeviceSettings {
-            settings: HashMap::new(),
-            setting_descriptions: HashMap::new(),
-            setting_groups: HashMap::new(),
+            settings: BTreeMap::new(),
+            setting_descriptions: BTreeMap::new(),
+            setting_groups: BTreeMap::new(),
         }
     }
 
@@ -136,19 +136,19 @@ impl DeviceSettings {
     }
 
     /// Get all stored settings
-    pub fn get_settings(&self) -> &HashMap<u32, DeviceSetting> {
+    pub fn get_settings(&self) -> &BTreeMap<u32, DeviceSetting> {
         &self.settings
     }
 
     /// Get a reference to the device settings's setting groups.
     #[must_use]
-    pub fn setting_groups(&self) -> &HashMap<u32, DeviceSettingGroup> {
+    pub fn setting_groups(&self) -> &BTreeMap<u32, DeviceSettingGroup> {
         &self.setting_groups
     }
 
     /// Get a reference to the device settings's setting descriptions.
     #[must_use]
-    pub fn setting_descriptions(&self) -> &HashMap<u32, DeviceSettingDescription> {
+    pub fn setting_descriptions(&self) -> &BTreeMap<u32, DeviceSettingDescription> {
         &self.setting_descriptions
     }
 }

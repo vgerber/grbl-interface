@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::BTreeMap, fmt::Debug};
 
 const ERROR_CODE_PREFIX: &str = "[ERRORCODE:";
 const ERROR_CODE_SUFFIX: &str = "]";
@@ -8,17 +8,17 @@ const STATUS_CODE_DELIMETER: &str = "|";
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct StatusCodes {
-    error_codes: HashMap<u16, ErrorCode>,
-    alarm_codes: HashMap<u16, AlarmCode>,
+    error_codes: BTreeMap<u16, ErrorCode>,
+    alarm_codes: BTreeMap<u16, AlarmCode>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct ErrorCode {
     code: u16,
     description: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct AlarmCode {
     code: u16,
     description: String,
@@ -28,7 +28,7 @@ impl StatusCodes {
 
     /// Creates a empty status code collection
     pub fn new() -> Self {
-        StatusCodes { error_codes: HashMap::new(), alarm_codes: HashMap::new() }
+        StatusCodes { error_codes: BTreeMap::new(), alarm_codes: BTreeMap::new() }
     }
 
     /// Inserts a new error code or replaces the old value
@@ -43,13 +43,13 @@ impl StatusCodes {
 
     /// Get a reference to the status codes's error codes.
     #[must_use]
-    pub fn error_codes(&self) -> &HashMap<u16, ErrorCode> {
+    pub fn error_codes(&self) -> &BTreeMap<u16, ErrorCode> {
         &self.error_codes
     }
 
     /// Get a reference to the status codes's alarm codes.
     #[must_use]
-    pub fn alarm_codes(&self) -> &HashMap<u16, AlarmCode> {
+    pub fn alarm_codes(&self) -> &BTreeMap<u16, AlarmCode> {
         &self.alarm_codes
     }
 }
@@ -138,6 +138,13 @@ impl AlarmCode {
     }
 }
 
+impl Debug for AlarmCode {
+
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct(format!("AlarmCode [{},{}]", self.code(), self.description()).as_str()).finish()
+    }
+}
+
 impl ErrorCode {
 
     /// Reads an error code description message and stores the description for the specific code
@@ -176,5 +183,12 @@ impl ErrorCode {
     #[must_use]
     pub fn description(&self) -> &str {
         self.description.as_ref()
+    }
+}
+
+impl Debug for ErrorCode {
+
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct(format!("ErrorCode [{},{}]", self.code(), self.description()).as_str()).finish()
     }
 }
