@@ -204,7 +204,7 @@ impl Drop for DeviceService {
     
         for id in ids {
             if let Err(_) = self.close_device(&id) {
-                panic!("Cannot close devicd \"{}\"", id)
+                panic!("Cannot close device \"{}\"", id)
             }
         }
     }
