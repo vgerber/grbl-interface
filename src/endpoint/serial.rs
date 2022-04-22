@@ -18,7 +18,7 @@ use super::Endpoint;
 /// 
 /// // send first message
 /// // and read responses
-/// endpoint.write("$I").unwrap();
+/// endpoint.write("$I\n").unwrap();
 /// let response = endpoint.read_new_messages(Duration::from_millis(100));
 /// 
 /// // close connection after 
