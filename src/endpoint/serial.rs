@@ -2,7 +2,7 @@ use std::{time::{Duration, Instant}, thread::{self, JoinHandle}, sync::{mpsc::{s
 
 use serialport::{SerialPortInfo, SerialPort, SerialPortType};
 
-use crate::device::command::general::SYNC;
+use crate::device::command::general::{SYNC, self};
 
 use super::Endpoint;
 
@@ -18,7 +18,7 @@ use super::Endpoint;
 /// 
 /// // send first message
 /// // and read responses
-/// endoint.write("$I").unwrap();
+/// endpoint.write("$I").unwrap();
 /// let response = endpoint.read_new_messages(Duration::from_millis(100));
 /// 
 /// // close connection after 
@@ -116,7 +116,10 @@ impl SerialEndpoint {
                 return;
             }
 
-            // buffer for uncomplete messages read from device
+            // start up sequence
+            SerialEndpoint::send_grbl_startup(serial_port.try_clone().unwrap());
+
+            // buffer for incomplete messages read from device
             let mut message_buffer = String::from("");
 
             loop {
@@ -137,6 +140,13 @@ impl SerialEndpoint {
             }
         }));
         
+    }
+
+    fn send_grbl_startup(mut serial_port: Box<dyn SerialPort>) {
+        serial_port.write(general::SYNC.as_bytes()).unwrap();
+        serial_port.write(general::SYNC.as_bytes()).unwrap();
+        thread::sleep(Duration::from_secs(2));
+        serial_port.flush().unwrap();
     }
 
     /// Reads from the serial device buffer and sends a new line to tx_read
@@ -165,7 +175,7 @@ impl SerialEndpoint {
         while data_find_index.is_some() {
             let new_line_index = data_find_index.unwrap();
 
-            // push found line segement
+            // push found line segment
             tx_read.send(message_buffer[..new_line_index-1].to_string()).unwrap();
 
             // move cursor to new line
@@ -181,7 +191,7 @@ impl SerialEndpoint {
     /// * True/False indicates if write was successful
     /// * An error if reading from rx failed
     fn write_buffer(mut serial_port: Box<dyn SerialPort>, rx_write: &Receiver<String>) -> Result<bool, String> {
-        if let Ok(message) = rx_write.recv_timeout(Duration::from_millis(1)) {
+        if let Ok(message) = rx_write.recv_timeout(Duration::from_millis(1)) {            
             match serial_port.write(message.as_bytes()) {
                 Ok(_) => Ok(true),
                 Err(_) =>  Err(format!("Unable to send message \"{}\" to {}", message, serial_port.name().unwrap_or(String::from("Unknown")))),
@@ -195,7 +205,7 @@ impl SerialEndpoint {
     /// 
     /// Is required for issuing simulator commands
     pub fn write_sync(&mut self) -> Result<(), String> {
-        self.write(format!("{}\n", SYNC).as_str())
+        self.write(general::SYNC)
     }
 }
 
@@ -205,7 +215,7 @@ impl Endpoint for SerialEndpoint {
         if let Some(tx) = self.tx_write.clone() {
             match tx.send(message.to_string()) {
                 Ok(_) => Ok(()),
-                Err(_) => Err(String::from(format!("Unabel to send \"{}\" to {}", message, self.port_name))),
+                Err(_) => Err(String::from(format!("Unable to send \"{}\" to {}", message, self.port_name))),
             }
         } else {
             return Err("Serial connection is not open!".to_string());
@@ -216,14 +226,14 @@ impl Endpoint for SerialEndpoint {
     fn open(&mut self) -> Result<(), String> {
         // prevent opening a connection multiple times
         if let Some(_) = self.serial_thread {
-            return Err("Serial device is already listenting!".to_string());
+            return Err("Serial device is already listening!".to_string());
         }
 
         self.open_serial_port();
         Ok(())
     }
 
-    /// Closes exisiting serial connection
+    /// Closes existing serial connection
     fn close(&mut self) -> Result<(), String> {
         // reset all channels to serial thread
         // and wait until thread stops
