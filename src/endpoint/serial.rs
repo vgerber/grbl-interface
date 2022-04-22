@@ -2,7 +2,8 @@ use std::{time::{Duration, Instant}, thread::{self, JoinHandle}, sync::{mpsc::{s
 
 use serialport::{SerialPortInfo, SerialPort, SerialPortType};
 
-use crate::device::command::general::{SYNC, self};
+
+use crate::device::command::general;
 
 use super::Endpoint;
 
@@ -10,10 +11,14 @@ use super::Endpoint;
 /// 
 /// ```
 /// // get all available ports
+/// use grbli::endpoint::*;
+/// use grbli::endpoint::serial::*;
+/// use std::time::Duration;
+/// 
 /// let all_ports = SerialEndpoint::find_serial_ports();
 /// 
 /// // open connection
-/// let endpoint = SerialEndpoint::from(all_ports, 115200);
+/// let mut endpoint = SerialEndpoint::from(&all_ports[0].port_name, 115200);
 /// endpoint.open().unwrap();
 /// 
 /// // send first message
