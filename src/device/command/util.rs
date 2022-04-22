@@ -1,4 +1,4 @@
-use super::{settings, state, general};
+use super::{settings, state, general, realtime};
 
 
 
@@ -19,8 +19,7 @@ pub fn load_device_metadata_commands() -> Vec<String> {
         // query the current device state
         general::GET_NGC_PARAMETERS.to_string(),
         general::GET_STARTUP_LINES.to_string(),
-        general::GET_PROGRAM_DEMARCATION.to_string(),
-        general::STATUS_REPORT.to_string(),
+        realtime::STATUS_REPORT.to_string(),
         general::SYNC.to_string()
     ] 
 }
