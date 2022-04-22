@@ -1,12 +1,13 @@
 pub mod util;
 
-pub mod general {
-    pub const SYNC: &str = "\0\n";
-
+pub mod realtime {
     pub const STATUS_REPORT: &str = "?";
     pub const CYCLE_START: &str = "~";
     pub const FEED_HOLD: &str = "!";
-    pub const UNLOCK: &str = "$X";
+}
+
+pub mod general {
+    pub const SYNC: &str = "\r\n";    
     
     pub mod home {
         pub const HOME_ALL: &str = "$H\n";
@@ -18,12 +19,13 @@ pub mod general {
         pub const HOME_C: &str = "$HC\n";
     }
 
-    pub const CHECK: &str = "$C";
+    pub const UNLOCK: &str = "$X\n";
+    pub const CHECK: &str = "$C\n";
     
     pub const GET_NGC_PARAMETERS: &str = "$#\n";
     pub const GET_STARTUP_LINES: &str = "$N\n";    
     
-    pub const GET_PROGRAM_DEMARCATION: &str = "%";
+    
     pub const NO_TOOL: &str = "None";    
 }
 
@@ -50,6 +52,10 @@ pub mod sdcard {
     pub const RUN: &str = "F=\n";
     pub const UNLINK: &str = "FD=\n";
     pub const DUMP: &str = "F<=\n";
+}
+
+pub mod gcode {
+    pub const PROGRAM_DEMARCATION: &str = "%";
 }
 
 pub mod format {
