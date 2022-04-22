@@ -20,8 +20,8 @@ pub mod general {
 
     pub const CHECK: &str = "$C";
     
-    pub const GET_NGC_PARAMETERS: &str = "$#";
-    pub const GET_STARTUP_LINES: &str = "$N";    
+    pub const GET_NGC_PARAMETERS: &str = "$#\n";
+    pub const GET_STARTUP_LINES: &str = "$N\n";    
     
     pub const GET_PROGRAM_DEMARCATION: &str = "%";
     pub const NO_TOOL: &str = "None";    
