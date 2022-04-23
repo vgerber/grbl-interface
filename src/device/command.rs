@@ -1,5 +1,26 @@
 pub mod util;
 
+
+/// Indicates if the executor of this command should expect a status code
+/// 
+/// # Status Codes
+/// ```text
+/// // Command executed successful
+/// $ Command
+/// ok
+/// 
+/// // Command failed
+/// $ Command
+/// error:2
+/// ```
+/// 
+pub fn has_status_response(command: &str) -> bool {
+    match command {
+        "?" | "~" | "!" => true,
+        _ => false
+    }
+}
+
 pub mod realtime {
     pub const STATUS_REPORT: &str = "?";
     pub const CYCLE_START: &str = "~";
