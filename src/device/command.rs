@@ -1,23 +1,22 @@
 pub mod util;
 
-
 /// Indicates if the executor of this command should expect a status code
-/// 
+///
 /// # Status Codes
 /// ```text
 /// // Command executed successful
 /// $ Command
 /// ok
-/// 
+///
 /// // Command failed
 /// $ Command
 /// error:2
 /// ```
-/// 
+///
 pub fn has_status_response(command: &str) -> bool {
     match command {
         "?" | "~" | "!" => true,
-        _ => false
+        _ => false,
     }
 }
 
@@ -28,51 +27,50 @@ pub mod realtime {
 }
 
 pub mod general {
-    pub const SYNC: &str = "\r\n";    
-    
+    pub const SYNC: &str = "\r\n";
+
     pub mod home {
-        pub const HOME_ALL: &str = "$H\n";
-        pub const HOME_X: &str = "$HX\n";
-        pub const HOME_Y: &str = "$HY\n";
-        pub const HOME_Z: &str = "$HZ\n";
-        pub const HOME_A: &str = "$HA\n";
-        pub const HOME_B: &str = "$HB\n";
-        pub const HOME_C: &str = "$HC\n";
+        pub const HOME_ALL: &str = "$H\r";
+        pub const HOME_X: &str = "$HX\r";
+        pub const HOME_Y: &str = "$HY\r";
+        pub const HOME_Z: &str = "$HZ\r";
+        pub const HOME_A: &str = "$HA\r";
+        pub const HOME_B: &str = "$HB\r";
+        pub const HOME_C: &str = "$HC\r";
     }
 
-    pub const UNLOCK: &str = "$X\n";
-    pub const CHECK: &str = "$C\n";
-    
-    pub const GET_NGC_PARAMETERS: &str = "$#\n";
-    pub const GET_STARTUP_LINES: &str = "$N\n";    
-    
-    
-    pub const NO_TOOL: &str = "None";    
+    pub const UNLOCK: &str = "$X\r";
+    pub const CHECK: &str = "$C\r";
+
+    pub const GET_NGC_PARAMETERS: &str = "$#\r";
+    pub const GET_STARTUP_LINES: &str = "$N\r";
+
+    pub const NO_TOOL: &str = "None";
 }
 
 pub mod state {
-    pub const GET_PARSER_STATE: &str = "$G\n";
-    pub const GET_INFO: &str = "$I\n";
-    pub const GET_INFO_EXTENDED: &str = "$I+\n";
-    pub const GET_ALARM_CODES: &str = "$EA\n";
-    pub const GET_ERROR_CODES: &str = "$EE\n";
+    pub const GET_PARSER_STATE: &str = "$G\r";
+    pub const GET_INFO: &str = "$I\r";
+    pub const GET_INFO_EXTENDED: &str = "$I+\r";
+    pub const GET_ALARM_CODES: &str = "$EA\r";
+    pub const GET_ERROR_CODES: &str = "$EE\r";
 }
 
 pub mod settings {
-    pub const GET: &str = "$$\n";
-    pub const GET_ALL: &str = "$+\n";
-    pub const GET_DETAILS: &str = "$ES\n";
-    pub const GET_GROUPS: &str = "$EG\n";
-    pub const SETTINGS_RESET: &str = "RST\n";
+    pub const GET: &str = "$$\r";
+    pub const GET_ALL: &str = "$+\r";
+    pub const GET_DETAILS: &str = "$ES\r";
+    pub const GET_GROUPS: &str = "$EG\r";
+    pub const SETTINGS_RESET: &str = "RST\r";
 }
 
 pub mod sdcard {
-    pub const MOUNT: &str = "FM\n";
-    pub const DIR: &str = "F\n";
-    pub const REWIND: &str = "FR\n";
-    pub const RUN: &str = "F=\n";
-    pub const UNLINK: &str = "FD=\n";
-    pub const DUMP: &str = "F<=\n";
+    pub const MOUNT: &str = "FM\r";
+    pub const DIR: &str = "F\r";
+    pub const REWIND: &str = "FR\r";
+    pub const RUN: &str = "F=\r";
+    pub const UNLINK: &str = "FD=\r";
+    pub const DUMP: &str = "F<=\r";
 }
 
 pub mod gcode {

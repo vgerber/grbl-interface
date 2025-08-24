@@ -1,8 +1,13 @@
 use std::{thread, time::Duration};
 
-use grbli::{service::device_service::{DeviceService, DeviceEndpointType}, device::command::{state::{*, self}, general::{SYNC, self}, settings}};
-
-
+use grbli::{
+    device::command::{
+        general::SYNC,
+        settings,
+        state::{self},
+    },
+    service::device_service::{DeviceEndpointType, DeviceService},
+};
 
 #[test]
 fn run_device_list() {
@@ -19,14 +24,22 @@ fn run_device_init() {
     let device_desc = ("/dev/ttyACM0".to_string(), DeviceEndpointType::Serial);
 
     service.open_device(&device_desc).unwrap();
-    service.write_device_command(&device_desc.0, format!("{}\n", state::GET_INFO_EXTENDED).as_str()).unwrap();
-    service.write_device_command(&device_desc.0, format!("{}\n", settings::GET_ALL).as_str()).unwrap();
-    service.write_device_command(&device_desc.0, format!("{}\n", settings::GET_DETAILS).as_str()).unwrap();
-    service.write_device_command(&device_desc.0, format!("{}\n", settings::GET_GROUPS).as_str()).unwrap();
-    service.write_device_command(&device_desc.0, format!("{}\n", SYNC).as_str()).unwrap();
+    service
+        .write_device_command(&device_desc.0, state::GET_INFO_EXTENDED)
+        .unwrap();
+    service
+        .write_device_command(&device_desc.0, settings::GET_ALL)
+        .unwrap();
+    service
+        .write_device_command(&device_desc.0, settings::GET_DETAILS)
+        .unwrap();
+    service
+        .write_device_command(&device_desc.0, settings::GET_GROUPS)
+        .unwrap();
+    service.write_device_command(&device_desc.0, SYNC).unwrap();
 
-    thread::sleep(Duration::from_millis(100));
+    thread::sleep(Duration::from_millis(2500));
 
-    let info =  service.get_device_info(&device_desc.0).unwrap();
+    let info = service.get_device_info(&device_desc.0).unwrap();
     println!("{:#?}", info);
 }

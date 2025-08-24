@@ -1,18 +1,21 @@
-use std::{thread, time::Duration};
+use std::time::Duration;
 
-use grbli::endpoint::{serial::SerialEndpoint, Endpoint};
+use grbli::{
+    device::command::{realtime, settings, state},
+    endpoint::{serial::SerialEndpoint, Endpoint},
+};
 use serialport::SerialPortType;
-
 
 fn get_port_name(port_type: SerialPortType) -> String {
     match port_type {
-        SerialPortType::UsbPort(info) => String::from(format!("USB {}", info.manufacturer.unwrap_or_default())),
+        SerialPortType::UsbPort(info) => {
+            String::from(format!("USB {}", info.manufacturer.unwrap_or_default()))
+        }
         SerialPortType::PciPort => String::from("PCI"),
         SerialPortType::BluetoothPort => String::from("Bluetooth"),
         SerialPortType::Unknown => String::from("Unknown"),
     }
 }
-
 
 #[test]
 fn search_for_serial_devices() {
@@ -33,13 +36,13 @@ fn open_test_device() {
     /*
     port.open().unwrap();
     println!("Opend!");
-    
+
     port.write(format!("?").as_str()).unwrap();
     port.write(format!("?").as_str()).unwrap();
     port.write(format!("?").as_str()).unwrap();
     port.write(format!("?").as_str()).unwrap();
     port.write(format!("?").as_str()).unwrap();
-    
+
     thread::sleep(Duration::from_millis(100));
 
     for message in port.read_new_messages(Duration::from_millis(100)) {
@@ -54,26 +57,14 @@ fn open_test_device() {
     println!("######################");
     println!("######################");
 
-    
-    port.write(format!("$+\n").as_str()).unwrap();
-    port.write_sync().unwrap();
-    port.write(format!("$ES\n").as_str()).unwrap();
-    port.write_sync().unwrap();
-    port.write(format!("$EG\n").as_str()).unwrap();
-    port.write_sync().unwrap();
-    port.write(format!("?").as_str()).unwrap();
-    port.write(format!("$\n").as_str()).unwrap();
-    port.write_sync().unwrap();
-    port.write(format!("?").as_str()).unwrap();
-    port.write(format!("$\n").as_str()).unwrap();
-    port.write_sync().unwrap();
-    port.write(format!("?").as_str()).unwrap();
-    port.write(format!("?").as_str()).unwrap();
-    port.write("$I+\n").unwrap();
-    port.write_sync().unwrap();
-    thread::sleep(Duration::from_millis(100));
+    port.write(state::GET_INFO).unwrap();
+    port.write(state::GET_INFO_EXTENDED).unwrap();
+    port.write(settings::GET_DETAILS).unwrap();
+    port.write(settings::GET_GROUPS).unwrap();
+    port.write(realtime::STATUS_REPORT).unwrap();
+    port.write(format!("$\r").as_str()).unwrap();
 
-    for message in port.read_new_messages(Duration::from_millis(100)) {
+    for message in port.read_new_messages(Duration::from_millis(2500)) {
         println!("Received {}", message);
     }
 }
